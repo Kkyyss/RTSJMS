@@ -5,10 +5,9 @@ import javax.realtime.PeriodicParameters;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
+import ky.rtt.consumer.road.RoadConsumer;
 import ky.rtt.producer.car.CarProducer;
 import ky.rtt.producer.car.CarProducerCensor;
-import ky.rtt.traffic.TrafficHandler;
-import ky.rtt.traffic.TrafficRTT;
 
 public class Container {
 	public Container() {
@@ -28,20 +27,30 @@ public class Container {
 		Components com = new Components("Bukit Jalil", tf1);
 		// Car Producer
 		CarProducerContainer(com);
+		RoadConsumerContainer(com);
+	}
+	
+	private void RoadConsumerContainer(Components com) {
+		Traffic tf1 = com.getTf1();
+		RelativeTime period = new RelativeTime(1000, 0);
+		ReleaseParameters rp = new PeriodicParameters(period);
 		
-		// T1
-		period = new RelativeTime(1000, 0);
-		rp = new PeriodicParameters(period);
-		TrafficRTT tfRtt1 = new TrafficRTT(rp, tf1);
-		TrafficHandler tfHdlr = new TrafficHandler(tfRtt1);
-		asyncEvt.setHandler(tfHdlr);
-		tfRtt1.setAsyncEvt(asyncEvt);
-		tfRtt1.start();		
+		// Consumers
+		RoadConsumer rc1 = new RoadConsumer("T1-LEFT-RC", rp, Direction.LEFT, tf1);
+		RoadConsumer rc2 = new RoadConsumer("T1-TOP-RC", rp, Direction.TOP, tf1);
+		RoadConsumer rc3 = new RoadConsumer("T1-DOWN-RC", rp, Direction.DOWN, tf1);
+		RoadConsumer rc4 = new RoadConsumer("T1-RIGHT-RC", rp, Direction.RIGHT, tf1);
+		
+		rc1.start();
+		rc2.start();
+		rc3.start();
+		rc4.start();
 	}
 	
 	private void CarProducerContainer(Components com) {
 		Traffic tf1 = com.getTf1();
-		RelativeTime period = new RelativeTime(3000, 0);
+		RelativeTime start;
+		RelativeTime period = new RelativeTime(1500, 0);
 		ReleaseParameters rp = new PeriodicParameters(period);
 		
 		// Producers
@@ -49,10 +58,13 @@ public class Container {
 		CarProducer cp2 = new CarProducer("T1-TOP-CP", rp, com, tf1, tf1.getTopRoad());
 		CarProducer cp3 = new CarProducer("T1-DOWN-CP", rp, com, tf1, tf1.getDownRoad());
 		
+		start = new RelativeTime(1500, 0);
+	  period = new RelativeTime(1500, 0);
+		rp = new PeriodicParameters(start, period);		
 		// Censors
-		CarProducerCensor cpc1 = new CarProducerCensor(cp1, rp);
-		CarProducerCensor cpc2 = new CarProducerCensor(cp2, rp);
-		CarProducerCensor cpc3 = new CarProducerCensor(cp3, rp);
+		CarProducerCensor cpc1 = new CarProducerCensor(rp, cp1);
+		CarProducerCensor cpc2 = new CarProducerCensor(rp, cp2);
+		CarProducerCensor cpc3 = new CarProducerCensor(rp, cp3);
 		
 		cp1.start();
 		cp2.start();

@@ -6,10 +6,16 @@ public class Car {
 	private Traffic tf;
 	private Road road;
 	private Boolean in;
-	private int length = 200;
-	private int to;
-	private int forwarding;
+	private int length = 1;
+	private int forwarding = 0;
+	private Car frontCar;
 
+	public Car getFrontCar() {
+		return frontCar;
+	}
+	public void setFrontCar(Car frontCar) {
+		this.frontCar = frontCar;
+	}
 	public Components getBj() {
 		return bj;
 	}
@@ -30,14 +36,6 @@ public class Car {
 
 	public void setTf(Traffic tf) {
 		this.tf = tf;
-	}
-
-	public int getTo() {
-		return to;
-	}
-
-	public void setTo(int to) {
-		this.to = to;
 	}
 
 	public int getLength() {
@@ -66,6 +64,9 @@ public class Car {
 
 	public int getForwarding() {
 		return forwarding;
+	}
+	public void increaseForward(int num) {
+		forwarding += num;
 	}
 
 	public void setForwarding(int forwarding) {

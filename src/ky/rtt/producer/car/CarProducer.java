@@ -1,11 +1,10 @@
 package ky.rtt.producer.car;
 
-import javax.realtime.AsyncEvent;
 import javax.realtime.RealtimeThread;
 import javax.realtime.ReleaseParameters;
 
-import ky.model.Components;
 import ky.model.Car;
+import ky.model.Components;
 import ky.model.Road;
 import ky.model.Traffic;
 
@@ -14,6 +13,7 @@ public class CarProducer extends RealtimeThread {
 	private Traffic tf;
 	private Road road;
 	private int carID;
+	private Car previousCar;
 
 	public Traffic getTf() {
 		return tf;
@@ -50,7 +50,7 @@ public class CarProducer extends RealtimeThread {
 		this.road = road;
 	}
 	
-	public void run() {
+	public void run() { 
 		while (true) {
 			carID++;
 			String name = super.getName() + "-CAR-" + carID;
@@ -59,18 +59,24 @@ public class CarProducer extends RealtimeThread {
 			car.setRoad(road);
 			car.setBj(bj);
 			car.setIn(true);
-			car.setTo(road.getLength() - road.getTotalInCarLength());
-			road.setTotalInCarLength(
-					road.getTotalInCarLength() + car.getLength());
+			car.setFrontCar(previousCar);
 			System.out.println(name + " produced.");
+			try {
+				road.getInCars().put(car);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			previousCar = car;
+			if (road.isInCarsMax())
+				System.out.println(road.getName() + " fulled...");
 			waitForNextPeriod();
 		}
 	}
 	
 	public boolean isMax() {
-		return road.getTotalInCarLength() >= road.getLength();
+		return road.getInCars().size() == road.getLength() - 1;
 	}
 	public boolean isMin() {
-		return road.getTotalInCarLength() <= 1;
+		return road.getInCars().size() <= 1;
 	}
 }

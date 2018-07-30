@@ -20,14 +20,14 @@ public class CarProducerHandler {
 
 	public class Stop extends AsyncEventHandler {
 		public void handleAsyncEvent() {
-			System.out.println("Car producer pause...");
+			System.out.println(rtt.getName() + " nearly fulled...");
 			rtt.deschedulePeriodic();
 		}
 	}
 	
 	public class Start extends AsyncEventHandler {
 		public void handleAsyncEvent() {
-			System.out.println("Car producer unpause...");
+			System.out.println(rtt.getName() + " nearly empty...");
 			rtt.schedulePeriodic();
 		}
 	}

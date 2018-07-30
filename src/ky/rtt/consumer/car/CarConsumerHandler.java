@@ -23,21 +23,29 @@ public class CarConsumerHandler extends AsyncEventHandler {
 		Road road = car.getRoad();
 		Traffic tf = car.getTf();
 		Traffic linkedTf = road.getLinkedTraffic();
-		
-		if (car.getForwarding() == road.getLength()) {
-			if (linkedTf == null) {
-				cc.setLeave(true);
+		if (road.getLight() == Light.GREEN) {
+			if (car.getForwarding() == road.getLength()) {
+				if (linkedTf == null) {
+					cc.setLeave(true);
+					return;
+				}
+				changeDirection(car, tf, road);
 				return;
 			}
-			changeDirection(car, tf, road);
 		}
-
-		car.setForwarding(car.getForwarding() + 200);
+		if (car.getFrontCar() != null && 
+				car.getFrontCar().getRoad().getName().equals(road.getName())) {
+			if (car.getForwarding() + 1 < car.getFrontCar().getForwarding()) {
+				car.increaseForward(1);
+			}				
+		} else {
+			if (car.getForwarding() + 1 < road.getLength()) {
+				car.increaseForward(1);
+			}
+		}
 	}
 	
-	
-	
-	private void changeDirection(Car car, Traffic tf, Road road) {
+	private boolean changeDirection(Car car, Traffic tf, Road road) {
 		Direction direction = MyUtils.getRandomDirections(road.getDirection());
 		Road nextRoad = tf.getRoad(direction);
 		Traffic linkedTf = nextRoad.getLinkedTraffic();
@@ -46,25 +54,47 @@ public class CarConsumerHandler extends AsyncEventHandler {
 			// Linked traffic
 			// 1 - From any direction-left
 			// 2 - From any direction-right
-			car.setTf(nextRoad.getLinkedTraffic());
-			car.setIn(true);
-			switch(road.getDirection()) {
-			case LEFT:
-				car.setRoad(car.getTf().getLeftRoad());
-				break;
-			case RIGHT:
-				car.setRoad(car.getTf().getRightRoad());
-				break;
-			default:
-				System.out.println("Who on earth cast this magic...");
-				break;
+			if (!nextRoad.isInCarsMax()) {
+				switch(road.getDirection()) {
+				case LEFT:
+					car.setRoad(linkedTf.getLeftRoad());
+					break;
+				case RIGHT:
+					car.setRoad(linkedTf.getRightRoad());
+					break;
+				default:
+					System.out.println("Who on earth cast this magic...");
+					break;
+				}
+				car.setIn(true);
+				car.setTf(linkedTf);
+				car.setForwarding(0);
+				car.setFrontCar(nextRoad.getLatestCar());
+				nextRoad.setLatestCar(car);
+				try {
+					nextRoad.getInCars().put(road.getInCars().take());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				return true;
 			}
 		} else {
 			// Not linked traffic
 			// 1 - From any direction-direction
-			car.setIn(false);
-			car.setRoad(nextRoad);
+			if (!nextRoad.isOutCarsMax()) {
+				car.setIn(false);
+				car.setRoad(nextRoad);
+				car.setForwarding(0);
+				car.setFrontCar(nextRoad.getLatestCar());
+				nextRoad.setLatestCar(car);
+				try {
+					car.getRoad().getOutCars().put(road.getOutCars().take());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				return true;				
+			}
 		}
-		car.setForwarding(0);
+		return false;
 	}
 }

@@ -1,35 +1,43 @@
 package ky.model;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class Road {
 	private String name;
 	private Traffic linkedTraffic;
 	private Direction direction;
-	private Light light;
+	private Light light = Light.RED;
 	private Condominium condominium;
-	private int length = 1000;
-	private int totalInCarLength = 0;
-	private int totalOutCarLength = 0;
-	private int width = 200;
+	private int length = 3;
+	private LinkedBlockingQueue<Car> inCars, outCars;
+	private int width = 2;
 	private Pedestrian pedestrian;
 	private boolean flooded;
+	private Car latestCar;
 	
-	public int getTotalOutCarLength() {
-		return totalOutCarLength;
+	public Car getLatestCar() {
+		return latestCar;
 	}
-	public void setTotalOutCarLength(int totalOutCarLength) {
-		this.totalOutCarLength = totalOutCarLength;
+	public void setLatestCar(Car latestCar) {
+		this.latestCar = latestCar;
+	}
+	public LinkedBlockingQueue<Car> getInCars() {
+		return inCars;
+	}
+	public void setInCars(LinkedBlockingQueue<Car> inCars) {
+		this.inCars = inCars;
+	}
+	public LinkedBlockingQueue<Car> getOutCars() {
+		return outCars;
+	}
+	public void setOutCars(LinkedBlockingQueue<Car> outCars) {
+		this.outCars = outCars;
 	}
 	public Traffic getLinkedTraffic() {
 		return linkedTraffic;
 	}
 	public void setLinkedTraffic(Traffic linkedTraffic) {
 		this.linkedTraffic = linkedTraffic;
-	}
-	public int getTotalInCarLength() {
-		return totalInCarLength;
-	}
-	public void setTotalInCarLength(int totalInCarLength) {
-		this.totalInCarLength = totalInCarLength;
 	}
 	public String getName() {
 		return name;
@@ -82,5 +90,11 @@ public class Road {
 	}
 	public void setLength(int length) {
 		this.length = length;
+	}
+	public boolean isInCarsMax() {
+		return inCars.size() == length;
+	}
+	public boolean isOutCarsMax() {
+		return outCars.size() == length;
 	}
 }
