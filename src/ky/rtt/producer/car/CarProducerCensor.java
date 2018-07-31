@@ -33,6 +33,7 @@ public class CarProducerCensor extends RealtimeThread {
 					isPause = false;
 				}
 			}
+			waitForNextPeriod();
 		}
 	}
 }

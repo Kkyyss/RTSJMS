@@ -3,18 +3,26 @@ package ky.model;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Road {
+	private boolean accident = false;
 	private String name;
 	private Traffic linkedTraffic;
 	private Direction direction;
 	private Light light = Light.RED;
 	private Condominium condominium;
 	private int length = 3;
-	private LinkedBlockingQueue<Car> inCars, outCars;
+	private LinkedBlockingQueue<Car> inCars = new LinkedBlockingQueue<>(); 
+	private LinkedBlockingQueue<Car> outCars = new LinkedBlockingQueue<>();
 	private int width = 2;
 	private Pedestrian pedestrian;
 	private boolean flooded;
 	private Car latestCar;
 	
+	public boolean isAccident() {
+		return accident;
+	}
+	public void setAccident(boolean accident) {
+		this.accident = accident;
+	}
 	public Car getLatestCar() {
 		return latestCar;
 	}

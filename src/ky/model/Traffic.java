@@ -58,21 +58,16 @@ public class Traffic {
 		this.rightRoad = rightRoad;
 	}
 	public Road getRoad(Direction direction) {
-		Road road = null;
 		switch (direction) {
 		case LEFT:
-			road = leftRoad;
-			break;
+			return leftRoad;
 		case TOP:
-			road = topRoad;
-			break;
+			return topRoad;
 		case DOWN:
-			road = downRoad;
-			break;
+			return downRoad;
 		case RIGHT:
-			road = rightRoad;
-			break;
+			return rightRoad;
 		}
-		return road;
+		return null;
 	}
 }

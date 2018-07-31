@@ -67,10 +67,10 @@ public class Container {
 		CarProducerCensor cpc3 = new CarProducerCensor(rp, cp3);
 		
 		cp1.start();
-		cp2.start();
-		cp3.start();
+//		cp2.start();
+//		cp3.start();
 		cpc1.start();
-		cpc2.start();
-		cpc3.start();
+//		cpc2.start();
+//		cpc3.start();
 	}
 }

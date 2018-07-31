@@ -16,6 +16,6 @@ public class MyUtils {
 		}
 		
 		Random rand = new Random();
-		return d.get(rand.nextInt(d.size() - 1));
+		return d.get(rand.nextInt(d.size()));
 	}
 }

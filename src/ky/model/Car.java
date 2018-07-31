@@ -66,6 +66,7 @@ public class Car {
 		return forwarding;
 	}
 	public void increaseForward(int num) {
+		System.out.println(name + " moving forward...");
 		forwarding += num;
 	}
 
