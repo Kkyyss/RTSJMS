@@ -1,6 +1,8 @@
 package ky.rtt.consumer.road;
 
+import javax.realtime.PeriodicParameters;
 import javax.realtime.RealtimeThread;
+import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
 import ky.model.Direction;
@@ -13,6 +15,8 @@ public class RoadConsumer extends RealtimeThread {
 	private Direction direction;
 	private Traffic tf;
 	private int wait = 0;
+	private boolean isGreen = false;
+	private RelativeTime start, period;
 	
 	public RoadConsumer(String name, ReleaseParameters rp, Direction direction, Traffic tf) {
 		super(null, rp);
@@ -24,20 +28,20 @@ public class RoadConsumer extends RealtimeThread {
 	
 	public void run() {
 		while (true) {
-			if (road.getLight() == Light.RED) {
-				wait += 1000;				
+			if (road.getLight() == Light.GREEN) {
+				isGreen = false;
+				road.setLight(Light.RED);
+				System.out.println(road.getName() + "'s traffic light into RED");
+				period = new RelativeTime(18000, 0);
+				setReleaseParameters(new PeriodicParameters(period));
 			} else {
-				wait = 0;
+				isGreen = true;
+				road.setLight(Light.GREEN);
+				System.out.println(road.getName() + "'s traffic light into GREEN");
+				period = new RelativeTime(6000, 0);
+				setReleaseParameters(new PeriodicParameters(period));		
 			}
 			waitForNextPeriod();
-		}
-	}
-	
-	private void switchLight() {
-		if (road.getLight() == Light.GREEN) {
-			road.setLight(Light.RED);
-		} else {
-			road.setLight(Light.GREEN);
 		}
 	}
 

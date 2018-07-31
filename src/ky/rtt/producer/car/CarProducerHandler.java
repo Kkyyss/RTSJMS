@@ -3,9 +3,9 @@ package ky.rtt.producer.car;
 import javax.realtime.AsyncEventHandler;
 
 public class CarProducerHandler {
-	public CarProducer rtt;
-	public Stop stop = new Stop();
-	public Start start = new Start();
+	private CarProducer rtt;
+	private Stop stop = new Stop();
+	private Start start = new Start();
 
 	public CarProducer getRtt() {
 		return rtt;

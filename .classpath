@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/com.aicas.jamaica.eclipse.launcher.vm.JamaicaVMType/jamaica-8.0-3"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/home/student/eclipse-workspace2/RTSJTMS/resources/java-json.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

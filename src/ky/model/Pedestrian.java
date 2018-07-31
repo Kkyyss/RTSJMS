@@ -1,49 +1,68 @@
 package ky.model;
 
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Pedestrian {
 	private String name;
-	private int width;
-	private int lLocated;
-	private int rLocated;
-	private List<Person> lPerson;
-	private List<Person> rPerson;
+	private int index;
+	private int length;
+	private AtomicInteger totalPerson = new AtomicInteger(0);
+	private AtomicInteger totalFallDown = new AtomicInteger(0);
+
+	public Pedestrian(String name, int index) {
+		this.name = name;
+		this.index = index;
+	}
 	
-	public List<Person> getlPerson() {
-		return lPerson;
+	public int getLength() {
+		return length;
 	}
-	public void setlPerson(List<Person> lPerson) {
-		this.lPerson = lPerson;
+
+	public void setLength(int length) {
+		this.length = length;
 	}
-	public List<Person> getrPerson() {
-		return rPerson;
+
+	public AtomicInteger getTotalFallDown() {
+		return totalFallDown;
 	}
-	public void setrPerson(List<Person> rPerson) {
-		this.rPerson = rPerson;
+
+	public void setTotalFallDown(AtomicInteger totalFallDown) {
+		this.totalFallDown = totalFallDown;
 	}
+
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getWidth() {
-		return width;
+
+	public int getIndex() {
+		return index;
 	}
-	public void setWidth(int width) {
-		this.width = width;
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
-	public int getlLocated() {
-		return lLocated;
+
+	public AtomicInteger getTotalPerson() {
+		return totalPerson;
 	}
-	public void setlLocated(int lLocated) {
-		this.lLocated = lLocated;
+
+	public void setTotalPerson(AtomicInteger totalPerson) {
+		this.totalPerson = totalPerson;
 	}
-	public int getrLocated() {
-		return rLocated;
+	
+	public void increasePerson() {
+		totalPerson.incrementAndGet();
 	}
-	public void setrLocated(int rLocated) {
-		this.rLocated = rLocated;
+	public void decreasePerson() {
+		totalPerson.decrementAndGet();
+	}
+	public void increaseFallDown() {
+		totalFallDown.incrementAndGet();
+	}
+	public void decreaseFallDown() {
+		totalFallDown.decrementAndGet();
 	}
 }

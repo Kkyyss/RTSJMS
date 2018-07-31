@@ -3,8 +3,8 @@ package ky.model;
 public class Condominium {
 	private String name;
 	private int width;
-	private int lLocated;
-	private int rLocated;
+	private int index;
+	private int size = 1;
 	public String getName() {
 		return name;
 	}
@@ -17,16 +17,16 @@ public class Condominium {
 	public void setWidth(int width) {
 		this.width = width;
 	}
-	public int getlLocated() {
-		return lLocated;
+	public int getIndex() {
+		return index;
 	}
-	public void setlLocated(int lLocated) {
-		this.lLocated = lLocated;
+	public void setIndex(int index) {
+		this.index = index;
 	}
-	public int getrLocated() {
-		return rLocated;
+	public int getSize() {
+		return size;
 	}
-	public void setrLocated(int rLocated) {
-		this.rLocated = rLocated;
+	public void setSize(int size) {
+		this.size = size;
 	}
 }

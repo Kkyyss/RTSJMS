@@ -17,6 +17,15 @@ public class CarConsumer extends RealtimeThread {
 	private Car car;
 	private RelativeTime start, period;
 	private ReleaseParameters rp;
+	private boolean isLeave = false;
+
+	public boolean isLeave() {
+		return isLeave;
+	}
+
+	public void setLeave(boolean isLeave) {
+		this.isLeave = isLeave;
+	}
 
 	public CarConsumer(String name, Car car) {
 		super();
@@ -32,21 +41,27 @@ public class CarConsumer extends RealtimeThread {
 		while (true) {
 			Components bj = car.getBj();
 			Road road = car.getRoad();
-			road.setLight(Light.GREEN);
 			Traffic tf = car.getTf();
 			Traffic linkedTf = road.getLinkedTraffic();
+			
+			// Car going out and not linked with others traffic
+			if (car.getForwarding() == road.getLength()) {
+				if (linkedTf == null && !car.getIn()) {
+					System.out.println(car.getName() + " leave...");
+					try {
+						road.getOutCars().take();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					car.setForwarding(-1);
+					isLeave = true;
+					return;
+				}
+			}
+			
+			// Only traffic light turned into GREEN and change direction.
 			if (road.getLight() == Light.GREEN) {
 				if (car.getForwarding() == road.getLength()) {
-					if (linkedTf == null && !car.getIn()) {
-						System.out.println(car.getName() + " leave...");
-						try {
-							road.getOutCars().take();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						car.setForwarding(-1);
-						return;
-					}
 					if (changeDirection(car, tf, road)) {
 						car.setName(car.getName() + " -> " + car.getRoad().getName());
 						car.increaseForward(1);
@@ -54,11 +69,12 @@ public class CarConsumer extends RealtimeThread {
 					continue;
 				}
 			}
+			// Any cases
 			if (car.getFrontCar() != null && car.getFrontCar().getForwarding() != -1 &&
 					car.getFrontCar().getRoad().getName().equals(road.getName())) {
 				if (car.getForwarding() + 1 < car.getFrontCar().getForwarding()) {
 					car.increaseForward(1);
-				}				
+				}
 			} else {
 				if (car.getForwarding() + 1 <= road.getLength()) {
 					car.increaseForward(1);

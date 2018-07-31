@@ -82,7 +82,7 @@ public class CarProducer extends RealtimeThread {
 	}
 	
 	public boolean isMax() {
-		return road.getInCars().size() == road.getLength() - 1;
+		return road.getInCars().size() >= road.getLength() - 1;
 	}
 	public boolean isMin() {
 		return road.getInCars().size() <= 1;

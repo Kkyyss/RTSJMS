@@ -1,5 +1,13 @@
 package ky.model;
 
-public class Weather {
-
+public enum Weather {
+	CLEAR_SKY,
+	FEW_CLOUDS,
+	SCATTERED_CLOUDS,
+	BROKEN_CLOUDS,
+	SHOWER_RAIN,
+	RAIN,
+	THUNDERSTORM,
+	SNOW,
+	MIST,
 }

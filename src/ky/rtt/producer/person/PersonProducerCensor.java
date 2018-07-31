@@ -1,4 +1,4 @@
-package ky.rtt.consumer.car;
+package ky.rtt.producer.person;
 
 import javax.realtime.AsyncEvent;
 import javax.realtime.PeriodicParameters;
@@ -6,49 +6,44 @@ import javax.realtime.RealtimeThread;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
-import ky.model.Car;
-import ky.model.Road;
+import ky.model.Components;
+import ky.model.Weather;
 
-public class CarConsumerCensor extends RealtimeThread {
-	private CarConsumer rtt;
+public class PersonProducerCensor extends RealtimeThread {
+	private PersonProducer rtt;
 	private AsyncEvent slowEvt = new AsyncEvent();
 	private AsyncEvent speedEvt = new AsyncEvent();
 	private boolean isSlow = false;
 	private RelativeTime start, period;
 	private ReleaseParameters rp;
 	
-	public CarConsumerCensor(CarConsumer rtt) {
+	public PersonProducerCensor(PersonProducer rtt) {
 		period = new RelativeTime(1000, 0);
 		rp = new PeriodicParameters(period);
 		setReleaseParameters(rp);
 		this.rtt = rtt;
-		CarConsumerHandler cch = new CarConsumerHandler(rtt.getCar().getName(), rtt);
+		PersonProducerHandler cch = new PersonProducerHandler(rtt.getName(), rtt);
 		slowEvt.addHandler(cch.getSlowdown());
 		speedEvt.addHandler(cch.getSpeedup());
 	}
 	
 	public void run() {
-		System.out.println(rtt.getName() + " censor started...");
-		while(!rtt.isLeave()) {
-			Car car = rtt.getCar();
-			Road road = car.getRoad();
-
-			// Accident
+		while (true) {
+			Components com = rtt.getCom();
+			
 			if (!isSlow) {
-				if (road.isAccident() || road.isFlooded()) {
+				if (com.getWeather() == Weather.THUNDERSTORM || com.getWeather() == Weather.RAIN) {
 					slowEvt.fire();
 					isSlow = true;
 				}
 			}
 			if (isSlow) {
-				if (!road.isAccident() && !road.isFlooded()) {
+				if (com.getWeather() != Weather.THUNDERSTORM && com.getWeather() != Weather.RAIN) {
 					speedEvt.fire();
 					isSlow = false;
 				}
 			}
-			
 			waitForNextPeriod();
 		}
-		System.out.println(rtt.getName() + " censor ended...");
 	}
 }

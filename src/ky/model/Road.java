@@ -1,6 +1,7 @@
 package ky.model;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Road {
 	private boolean accident = false;
@@ -12,11 +13,17 @@ public class Road {
 	private int length = 3;
 	private LinkedBlockingQueue<Car> inCars = new LinkedBlockingQueue<>(); 
 	private LinkedBlockingQueue<Car> outCars = new LinkedBlockingQueue<>();
-	private int width = 2;
 	private Pedestrian pedestrian;
 	private boolean flooded;
-	private Car latestCar;
+	private Car latestCar; 
+	private AtomicInteger falldown = new AtomicInteger(0);
 	
+	public AtomicInteger getFalldown() {
+		return falldown;
+	}
+	public void setFalldown(AtomicInteger falldown) {
+		this.falldown = falldown;
+	}
 	public boolean isAccident() {
 		return accident;
 	}
@@ -59,9 +66,10 @@ public class Road {
 	public void setLight(Light light) {
 		this.light = light;
 	}
-	public Road(String name, Direction direction) {
+	public Road(String name, Direction direction, int length) {
 		this.direction = direction;
 		this.name = name;
+		this.length = length;
 	}
 	public Direction getDirection() {
 		return direction;
@@ -80,12 +88,6 @@ public class Road {
 	}
 	public void setPedestrian(Pedestrian pedestrian) {
 		this.pedestrian = pedestrian;
-	}
-	public int getWidth() {
-		return width;
-	}
-	public void setWidth(int width) {
-		this.width = width;
 	}
 	public boolean isFlooded() {
 		return flooded;
