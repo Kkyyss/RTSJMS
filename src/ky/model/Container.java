@@ -19,10 +19,12 @@ public class Container {
 		Road downRoad = new Road("T1-DOWN-R", Direction.DOWN, 4);	// T1 DOWN
 		Road rightRoad = new Road("T1-RIGHT-R", Direction.RIGHT, 5);	// T1 RIGHT
 
+		Condominium condo = new Condominium("T1-RIGHT-CONDO", 4, 4);
 		Pedestrian pedestrian = new Pedestrian("T1-TOP-P", 2);
 		topRoad.setPedestrian(pedestrian);
-		pedestrian = new Pedestrian("T1-RIGHT-P", 3);
+		pedestrian = new Pedestrian("T1-RIGHT-P", 2);
 		rightRoad.setPedestrian(pedestrian);
+		rightRoad.setCondominium(condo);
 		
 		Traffic tf1 = new Traffic(
 				"LEFT-T1",
@@ -30,7 +32,7 @@ public class Container {
 				leftRoad, topRoad, downRoad, rightRoad);
 		Components com = new Components("Bukit Jalil", tf1);
 		WeatherContainer(com);
-//		CarProducerContainer(com);
+		CarProducerContainer(com);
 		PersonProducerContainer(com);
 		RoadConsumerContainer(com);
 	}
@@ -45,7 +47,7 @@ public class Container {
 		PersonProducerCensor pps1, pps2, pps3, pps4;
 		
 		RelativeTime start = new RelativeTime(1000, 0);
-		RelativeTime period = new RelativeTime(2000, 0);
+		RelativeTime period = new RelativeTime(7000, 0);
 		ReleaseParameters rp = new PeriodicParameters(start, period);
 		
 		// in

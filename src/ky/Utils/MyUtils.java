@@ -39,7 +39,6 @@ public class MyUtils {
 	    while (scan.hasNext())
 	        str += scan.nextLine();
 	    scan.close();
-	 
 	    
 	    JSONObject obj = new JSONObject(str);
 	    // check whether return status OK
@@ -57,24 +56,20 @@ public class MyUtils {
 	
 	public static Weather getWeatherType(String weather) {
 		switch (weather.toLowerCase()) {
-		case "clear sky":
-		 return Weather.CLEAR_SKY;
-		case "few clouds":
-			return Weather.FEW_CLOUDS;
-		case "scattered clouds":
-		 return Weather.SCATTERED_CLOUDS;
-		case "broken clouds":
-			return Weather.BROKEN_CLOUDS;
-		case "shower rain":
-			return Weather.SHOWER_RAIN;
+		case "clear":
+		 return Weather.CLEAR;
+		case "clouds":
+			return Weather.CLOUDS;
+		case "atmosphere":
+		 return Weather.ATMOSPHERE;
+		case "drizzle":
+			return Weather.DRIZZLE;
 		case "rain":
 			return Weather.RAIN;
 		case "thunderstorm":
 			return Weather.THUNDERSTORM;
 		case "snow":
 			return Weather.SNOW;
-		case "mist":
-			return Weather.MIST;
 		}
 		return null;
 	}

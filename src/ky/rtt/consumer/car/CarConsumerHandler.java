@@ -21,20 +21,43 @@ public class CarConsumerHandler {
 	}
 	
 	public class SlowDown extends AsyncEventHandler {
+		private int speed = 3000;
+		public SlowDown() {};
+		public SlowDown(int speed) {
+			this.speed = speed;
+		}
+		
 		public void handleAsyncEvent() {
-			System.out.println(name + " slow down...");
-			period = new RelativeTime(3000, 0);
+			System.out.println(name + " slow down " + speed);
+			period = new RelativeTime(speed, 0);
 			rp = new PeriodicParameters(period);
 			rtt.setReleaseParameters(rp);
 		}
+		public int getSpeed() {
+			return speed;
+		}
+		public void setSpeed(int speed) {
+			this.speed = speed;
+		}
 	}
 	public class SpeedUp extends AsyncEventHandler {
+		private int speed = 1000;
+		public SpeedUp() {};
+		public SpeedUp(int speed) {
+			this.speed = speed;
+		}
 		public void handleAsyncEvent() {
-			System.out.println(name + " speed up...");
-			period = new RelativeTime(1000, 0);
+			System.out.println(name + " speed up " + speed);
+			period = new RelativeTime(speed, 0);
 			rp = new PeriodicParameters(period);
 			rtt.setReleaseParameters(rp);
-		}			
+		}
+		public int getSpeed() {
+			return speed;
+		}
+		public void setSpeed(int speed) {
+			this.speed = speed;
+		}
 	}
 	public SlowDown getSlowdown() {
 		return slowdown;

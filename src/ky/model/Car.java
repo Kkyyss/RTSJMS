@@ -1,5 +1,7 @@
 package ky.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Car {
 	private String name;
 	private Components bj;

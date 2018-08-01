@@ -4,9 +4,9 @@ import javax.realtime.RealtimeThread;
 import javax.realtime.ReleaseParameters;
 
 import ky.model.Components;
-import ky.model.Pedestrian;
 import ky.model.Person;
 import ky.model.Road;
+import ky.rtt.consumer.person.PersonConsumer;
 
 public class PersonProducer extends RealtimeThread {
 	private Components com;
@@ -32,11 +32,10 @@ public class PersonProducer extends RealtimeThread {
 			person.setCom(com);
 			person.setRoad(road);
 			System.out.println(name + " produced.");
-//			PersonConsumer pc = new PersonConsumer("PC-" + name, person);
+			PersonConsumer pc = new PersonConsumer("PC-" + name, road.getPedestrian(), person);
 //			PersonConsumerCensor censor = new PersonConsumerCensor(pc);
-//			pc.start();
+			pc.start();
 //			censor.start();
-			
 			waitForNextPeriod();
 		}
 	}

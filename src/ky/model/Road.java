@@ -1,10 +1,12 @@
 package ky.model;
 
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class Road {
-	private boolean accident = false;
+	private AtomicInteger []accident;
 	private String name;
 	private Traffic linkedTraffic;
 	private Direction direction;
@@ -16,18 +18,12 @@ public class Road {
 	private Pedestrian pedestrian;
 	private boolean flooded;
 	private Car latestCar; 
-	private AtomicInteger falldown = new AtomicInteger(0);
+
 	
-	public AtomicInteger getFalldown() {
-		return falldown;
-	}
-	public void setFalldown(AtomicInteger falldown) {
-		this.falldown = falldown;
-	}
-	public boolean isAccident() {
+	public AtomicInteger[] getAccident() {
 		return accident;
 	}
-	public void setAccident(boolean accident) {
+	public void setAccident(AtomicInteger[] accident) {
 		this.accident = accident;
 	}
 	public Car getLatestCar() {
@@ -70,6 +66,8 @@ public class Road {
 		this.direction = direction;
 		this.name = name;
 		this.length = length;
+		accident = new AtomicInteger[length];
+		Arrays.fill(accident, 0);
 	}
 	public Direction getDirection() {
 		return direction;

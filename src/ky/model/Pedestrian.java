@@ -5,9 +5,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Pedestrian {
 	private String name;
 	private int index;
-	private int length;
+	private int length = 2;
 	private AtomicInteger totalPerson = new AtomicInteger(0);
-	private AtomicInteger totalFallDown = new AtomicInteger(0);
 
 	public Pedestrian(String name, int index) {
 		this.name = name;
@@ -21,15 +20,6 @@ public class Pedestrian {
 	public void setLength(int length) {
 		this.length = length;
 	}
-
-	public AtomicInteger getTotalFallDown() {
-		return totalFallDown;
-	}
-
-	public void setTotalFallDown(AtomicInteger totalFallDown) {
-		this.totalFallDown = totalFallDown;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -58,11 +48,5 @@ public class Pedestrian {
 	}
 	public void decreasePerson() {
 		totalPerson.decrementAndGet();
-	}
-	public void increaseFallDown() {
-		totalFallDown.incrementAndGet();
-	}
-	public void decreaseFallDown() {
-		totalFallDown.decrementAndGet();
 	}
 }

@@ -16,6 +16,7 @@ public class CarConsumerCensor extends RealtimeThread {
 	private boolean isSlow = false;
 	private RelativeTime start, period;
 	private ReleaseParameters rp;
+	private CarConsumerHandler cch;
 	
 	public CarConsumerCensor(CarConsumer rtt) {
 		period = new RelativeTime(1000, 0);
@@ -23,6 +24,7 @@ public class CarConsumerCensor extends RealtimeThread {
 		setReleaseParameters(rp);
 		this.rtt = rtt;
 		CarConsumerHandler cch = new CarConsumerHandler(rtt.getCar().getName(), rtt);
+		this.cch = cch;
 		slowEvt.addHandler(cch.getSlowdown());
 		speedEvt.addHandler(cch.getSpeedup());
 	}
@@ -32,16 +34,27 @@ public class CarConsumerCensor extends RealtimeThread {
 		while(!rtt.isLeave()) {
 			Car car = rtt.getCar();
 			Road road = car.getRoad();
+			int acc = road.getAccident()[car.getForwarding()].get();
 
 			// Accident
 			if (!isSlow) {
-				if (road.isAccident() || road.isFlooded()) {
+				if (rtt.nearCondo()) {
+					System.out.println("Near Condo");
+					cch.getSlowdown().setSpeed(4000);
+					slowEvt.fire();
+					isSlow = true;
+				}
+				
+				if (acc > 0 || road.isFlooded()) {
+					System.out.println("Accident / Flooded");
+					cch.getSlowdown().setSpeed(5000);
 					slowEvt.fire();
 					isSlow = true;
 				}
 			}
 			if (isSlow) {
-				if (!road.isAccident() && !road.isFlooded()) {
+				if (!rtt.nearCondo() && acc <= 0 && !road.isFlooded()) {
+					cch.getSpeedup().setSpeed(1000);
 					speedEvt.fire();
 					isSlow = false;
 				}

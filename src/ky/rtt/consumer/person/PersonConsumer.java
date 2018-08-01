@@ -30,27 +30,33 @@ public class PersonConsumer extends RealtimeThread {
 	public void run() {
 		while (true) {
 			// tripping and falling
-			if (isFallDown) {
-				isFallDown = false;
-			}
-			
-			isFallDown = MyUtils.getRandomEventOccur();
-			
-			if (!isFallDown) {
-				if (person.getForwarding() == pedestrian.getLength()) {
-					pedestrian.decreasePerson();
-					return;
-				}
-				period = new RelativeTime(1000, 0);
-				rp = new PeriodicParameters(period);
-				setReleaseParameters(rp);
+			if (person.getForwarding() == 0) {
 				person.increaseForward(1);
 			} else {
-				isFallDown = true;
-				period = new RelativeTime(3000, 0);
-				rp = new PeriodicParameters(period);
-				setReleaseParameters(rp);
+				if (isFallDown) {
+					isFallDown = false;
+				}
+				
+				isFallDown = MyUtils.getRandomEventOccur();
+				
+				if (!isFallDown) {
+					if (person.getForwarding() == pedestrian.getLength()) {
+						pedestrian.decreasePerson();
+						System.out.println(person.getName() + " leave...");
+						return;
+					}
+					period = new RelativeTime(1000, 0);
+					rp = new PeriodicParameters(period);
+					setReleaseParameters(rp);
+					person.increaseForward(1);
+				} else {
+					isFallDown = true;
+					period = new RelativeTime(3000, 0);
+					rp = new PeriodicParameters(period);
+					setReleaseParameters(rp);
+				}
 			}
+			
 			waitForNextPeriod();
 		}
 	}
