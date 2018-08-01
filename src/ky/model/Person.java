@@ -5,7 +5,14 @@ public class Person {
 	private Components com;
 	private Road road;
 	private int forwarding;
+	private boolean leave;
 
+	public boolean isLeave() {
+		return leave;
+	}
+	public void setLeave(boolean leave) {
+		this.leave = leave;
+	}
 	public String getName() {
 		return name;
 	}
@@ -31,7 +38,7 @@ public class Person {
 		this.forwarding = forwarding;
 	}
 	public void increaseForward(int num) {
-		System.out.println(name + " moving forward...");
 		forwarding += num;
+		System.out.println(name + " moving forwarding " + forwarding + "/" + road.getPedestrian().getLength());
 	}
 }

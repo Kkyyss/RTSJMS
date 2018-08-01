@@ -19,8 +19,9 @@ public class CarConsumerCensor extends RealtimeThread {
 	private CarConsumerHandler cch;
 	
 	public CarConsumerCensor(CarConsumer rtt) {
+		start = new RelativeTime(1000, 0);
 		period = new RelativeTime(1000, 0);
-		rp = new PeriodicParameters(period);
+		rp = new PeriodicParameters(start, period);
 		setReleaseParameters(rp);
 		this.rtt = rtt;
 		CarConsumerHandler cch = new CarConsumerHandler(rtt.getCar().getName(), rtt);

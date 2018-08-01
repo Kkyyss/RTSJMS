@@ -81,7 +81,7 @@ public class CarConsumer extends RealtimeThread {
 		int frontCarIdx = car.getFrontCar().getForwarding();
 		AtomicBoolean []arr= road.getAccidentArea();
 		
-		if (carIdx + 1 == frontCarIdx) {
+		if (carIdx > 0 && carIdx + 1 == frontCarIdx) {
 			if (arr[carIdx - 1].get() || arr[frontCarIdx - 1].get()) {
 				return;
 			}
@@ -91,7 +91,8 @@ public class CarConsumer extends RealtimeThread {
 				arr[frontCarIdx - 1].set(true);
 				// Accident buff up to 8s
 				start = new RelativeTime(8000, 0);
-				rp = new PeriodicParameters(start, null);
+				period = new RelativeTime(1000, 0);
+				rp = new PeriodicParameters(start, period);
 				AccidentCensor ac1 = new AccidentCensor(rp, arr[carIdx - 1]);
 				AccidentCensor ac2 = new AccidentCensor(rp, arr[frontCarIdx - 1]);
 				ac1.start();
