@@ -64,11 +64,7 @@ public class CarProducer extends RealtimeThread {
 			car.setFrontCar(previousCar);
 			car.setIn(true);
 			System.out.println(name + " produced.");
-			try {
-				road.getInCars().put(car);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			road.getTotalInCars().incrementAndGet();
 			previousCar = car;
 			if (road.isInCarsMax())
 				System.out.println(road.getName() + " fulled...");
@@ -82,9 +78,9 @@ public class CarProducer extends RealtimeThread {
 	}
 	
 	public boolean isMax() {
-		return road.getInCars().size() >= road.getLength() - 1;
+		return road.getTotalInCars().get() >= road.getLength() - 1;
 	}
 	public boolean isMin() {
-		return road.getInCars().size() <= 1;
+		return road.getTotalInCars().get() <= 1;
 	}
 }

@@ -31,12 +31,16 @@ public class CarConsumerCensor extends RealtimeThread {
 	
 	public void run() {
 		System.out.println(rtt.getName() + " censor started...");
-		while(!rtt.isLeave()) {
+		while(!rtt.getCar().isLeave()) {
 			Car car = rtt.getCar();
 			Road road = car.getRoad();
-			int acc = road.getAccident()[car.getForwarding()].get();
+			boolean acc = false;
+			
+			if (car.getForwarding() > 0) {
+				acc = road.getAccidentArea()[car.getForwarding() - 1].get();
+			}
 
-			// Accident
+			// Buffs to slow down car
 			if (!isSlow) {
 				if (rtt.nearCondo()) {
 					System.out.println("Near Condo");
@@ -45,15 +49,16 @@ public class CarConsumerCensor extends RealtimeThread {
 					isSlow = true;
 				}
 				
-				if (acc > 0 || road.isFlooded()) {
-					System.out.println("Accident / Flooded");
+				if (acc) {
+					System.out.println("Accident Area...");
 					cch.getSlowdown().setSpeed(5000);
 					slowEvt.fire();
 					isSlow = true;
 				}
 			}
+			// Buffs to speed up car
 			if (isSlow) {
-				if (!rtt.nearCondo() && acc <= 0 && !road.isFlooded()) {
+				if (!rtt.nearCondo() && !acc) {
 					cch.getSpeedup().setSpeed(1000);
 					speedEvt.fire();
 					isSlow = false;

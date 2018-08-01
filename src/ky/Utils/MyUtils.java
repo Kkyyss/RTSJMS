@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.json.JSONObject;
 
@@ -89,5 +91,16 @@ public class MyUtils {
 		int res = rand.nextInt(9) + 1;
 		if (res > 8) return true;
 		else return false;
+	}
+	
+	public static void initialArrayOfAtomicIntegerVal(AtomicInteger []arr) {
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = new AtomicInteger(0);
+		}
+	}
+	public static void initialArrayOfAtomicBooleanVal(AtomicBoolean []arr) {
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = new AtomicBoolean(false);
+		}
 	}
 }

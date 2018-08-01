@@ -51,12 +51,15 @@ public class Container {
 		ReleaseParameters rp = new PeriodicParameters(start, period);
 		
 		// in
-		pp1 = new PersonProducer("PP-TOP-IN", rp, com, topRoad, true);
-		pp2 = new PersonProducer("PP-RIGHT-IN", rp, com, rightRoad, true);
+		pp1 = new PersonProducer("PP-TOP-FIRST", rp, com, topRoad, true);
+		pp2 = new PersonProducer("PP-RIGHT-FIRST", rp, com, rightRoad, true);
 		
+		start = new RelativeTime(5000, 0);
+		period = new RelativeTime(9000, 0);
+		rp = new PeriodicParameters(start, period);
 		// out
-		pp3 = new PersonProducer("PP-TOP-OUT", rp, com, topRoad, false);
-		pp4 = new PersonProducer("PP-RIGHT-OUT", rp, com, rightRoad, false);
+		pp3 = new PersonProducer("PP-TOP-SECOND", rp, com, topRoad, false);
+		pp4 = new PersonProducer("PP-RIGHT-SECOND", rp, com, rightRoad, false);
 		
 		pps1 = new PersonProducerCensor(pp1);
 		pps2 = new PersonProducerCensor(pp2);

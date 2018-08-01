@@ -1,48 +1,53 @@
 package ky.model;
 
-import java.util.Arrays;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicIntegerArray;
+
+import ky.Utils.MyUtils;
 
 public class Road {
-	private AtomicInteger []accident;
+	private AtomicBoolean []accidentArea;
 	private String name;
 	private Traffic linkedTraffic;
 	private Direction direction;
 	private Light light = Light.RED;
 	private Condominium condominium;
 	private int length = 3;
-	private LinkedBlockingQueue<Car> inCars = new LinkedBlockingQueue<>(); 
-	private LinkedBlockingQueue<Car> outCars = new LinkedBlockingQueue<>();
 	private Pedestrian pedestrian;
-	private boolean flooded;
-	private Car latestCar; 
+	private AtomicInteger []floodArea;
+	private Car latestCar;
+	private AtomicInteger totalInCars = new AtomicInteger(0);
+	private AtomicInteger totalOutCars = new AtomicInteger(0);
 
-	
-	public AtomicInteger[] getAccident() {
-		return accident;
+	public AtomicInteger getTotalInCars() {
+		return totalInCars;
 	}
-	public void setAccident(AtomicInteger[] accident) {
-		this.accident = accident;
+	public void setTotalInCars(AtomicInteger totalInCars) {
+		this.totalInCars = totalInCars;
+	}
+	public AtomicInteger getTotalOutCars() {
+		return totalOutCars;
+	}
+	public void setTotalOutCars(AtomicInteger totalOutCars) {
+		this.totalOutCars = totalOutCars;
+	}
+	public AtomicInteger[] getFloodArea() {
+		return floodArea;
+	}
+	public void setFloodArea(AtomicInteger[] floodArea) {
+		this.floodArea = floodArea;
+	}
+	public AtomicBoolean[] getAccidentArea() {
+		return accidentArea;
+	}
+	public void setAccidentArea(AtomicBoolean[] accidentArea) {
+		this.accidentArea = accidentArea;
 	}
 	public Car getLatestCar() {
 		return latestCar;
 	}
 	public void setLatestCar(Car latestCar) {
 		this.latestCar = latestCar;
-	}
-	public LinkedBlockingQueue<Car> getInCars() {
-		return inCars;
-	}
-	public void setInCars(LinkedBlockingQueue<Car> inCars) {
-		this.inCars = inCars;
-	}
-	public LinkedBlockingQueue<Car> getOutCars() {
-		return outCars;
-	}
-	public void setOutCars(LinkedBlockingQueue<Car> outCars) {
-		this.outCars = outCars;
 	}
 	public Traffic getLinkedTraffic() {
 		return linkedTraffic;
@@ -66,8 +71,8 @@ public class Road {
 		this.direction = direction;
 		this.name = name;
 		this.length = length;
-		accident = new AtomicInteger[length];
-		Arrays.fill(accident, 0);
+		accidentArea = new AtomicBoolean[length];
+		MyUtils.initialArrayOfAtomicBooleanVal(accidentArea);
 	}
 	public Direction getDirection() {
 		return direction;
@@ -87,12 +92,6 @@ public class Road {
 	public void setPedestrian(Pedestrian pedestrian) {
 		this.pedestrian = pedestrian;
 	}
-	public boolean isFlooded() {
-		return flooded;
-	}
-	public void setFlooded(boolean flooded) {
-		this.flooded = flooded;
-	}
 	public int getLength() {
 		return length;
 	}
@@ -100,9 +99,27 @@ public class Road {
 		this.length = length;
 	}
 	public boolean isInCarsMax() {
-		return inCars.size() == length;
+		return totalInCars.get() == length;
 	}
 	public boolean isOutCarsMax() {
-		return outCars.size() == length;
+		return totalOutCars.get() == length;
+	}
+	public void updateInCars(int num) {
+    while(true) {
+        int existingValue = totalInCars.get();
+        int newValue = existingValue + num;
+        if(totalInCars.compareAndSet(existingValue, newValue)) {
+            return;
+        }
+    }
+	}
+	public void updateOutCars(int num) {
+    while(true) {
+        int existingValue = totalOutCars.get();
+        int newValue = existingValue + num;
+        if(totalOutCars.compareAndSet(existingValue, newValue)) {
+            return;
+        }
+    }
 	}
 }

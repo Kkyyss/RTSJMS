@@ -1,5 +1,7 @@
 package ky.rtt.consumer.car;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.realtime.PeriodicParameters;
 import javax.realtime.RealtimeThread;
 import javax.realtime.RelativeTime;
@@ -18,15 +20,6 @@ public class CarConsumer extends RealtimeThread {
 	private Road road;
 	private RelativeTime start, period;
 	private ReleaseParameters rp;
-	private boolean isLeave = false;
-
-	public boolean isLeave() {
-		return isLeave;
-	}
-
-	public void setLeave(boolean isLeave) {
-		this.isLeave = isLeave;
-	}
 
 	public CarConsumer(String name, Car car) {
 		super();
@@ -38,7 +31,7 @@ public class CarConsumer extends RealtimeThread {
 	}
 	
 	public void run() {
-		while (true) {
+		while (!car.isLeave()) {
 			Components bj = car.getBj();
 			road = car.getRoad();
 			Traffic tf = car.getTf();
@@ -48,13 +41,8 @@ public class CarConsumer extends RealtimeThread {
 			if (car.getForwarding() == road.getLength()) {
 				if (linkedTf == null && !car.getIn()) {
 					System.out.println(car.getName() + " leave...");
-					try {
-						road.getOutCars().take();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					car.setForwarding(-1);
-					isLeave = true;
+					road.getTotalOutCars().decrementAndGet();
+					car.setLeave(true);;
 					return;
 				}
 			}
@@ -74,7 +62,7 @@ public class CarConsumer extends RealtimeThread {
 				break;
 			default:
 				// Any cases
-				if (car.getFrontCar() != null && car.getFrontCar().getForwarding() != -1 &&
+				if (car.getFrontCar() != null && !car.getFrontCar().isLeave() &&
 						car.getFrontCar().getRoad().getName().equals(road.getName())) {
 					// Car in front
 					pedestrianAndCarInFront();
@@ -88,17 +76,52 @@ public class CarConsumer extends RealtimeThread {
 		}
 	}
 	
+	private void accidentMayOccur() {
+		int carIdx = car.getForwarding();
+		int frontCarIdx = car.getFrontCar().getForwarding();
+		AtomicBoolean []arr= road.getAccidentArea();
+		
+		if (carIdx + 1 == frontCarIdx) {
+			if (arr[carIdx - 1].get() || arr[frontCarIdx - 1].get()) {
+				return;
+			}
+			if (MyUtils.getRandomEventOccur()) {
+				System.out.println("Oops...an acciddent happens in " + road.getName());
+				arr[carIdx - 1].set(true);
+				arr[frontCarIdx - 1].set(true);
+				// Accident buff up to 8s
+				start = new RelativeTime(8000, 0);
+				rp = new PeriodicParameters(start, null);
+				AccidentCensor ac1 = new AccidentCensor(rp, arr[carIdx - 1]);
+				AccidentCensor ac2 = new AccidentCensor(rp, arr[frontCarIdx - 1]);
+				ac1.start();
+				ac2.start();
+				
+				car.setLeave(true);
+				car.getFrontCar().setLeave(true);
+				if (car.getIn()) {
+					road.updateInCars(-2);
+				} else {
+					road.updateOutCars(-2);
+				}
+			}
+		}
+	}
+	
 	private void pedestrianAndCarInFront() {
 		// Near pedestrian
 		if (nearPedestrian()) {
 			// No person and forward
-				if (road.getPedestrian().getTotalPerson().get() <= 0) {
-				// RED/GREEN signal: move until behind the front car
-					moveUntilFrontCarBehind();
+				if (car.getIn() && road.getPedestrian().getFirstHalfPerson().get() <= 0) {
+					moveUntilFrontCarBehind();			
+				}
+				if (!car.getIn() && road.getPedestrian().getSecondHalfPerson().get() <= 0) {
+					moveUntilFrontCarBehind();					
 				}
 		} else {
 			// RED/GREEN signal: move until behind the front car
 			moveUntilFrontCarBehind();
+			accidentMayOccur();
 		}
 	}
 	
@@ -106,10 +129,12 @@ public class CarConsumer extends RealtimeThread {
 		// Near pedestrian
 		if (nearPedestrian()) {
 			// No person and forward
-				if (road.getPedestrian().getTotalPerson().get() <= 0) {
-				// RED/GREEN signal: move until the end of the road
-					moveUntilTheEnd();
-				}
+			if (car.getIn() && road.getPedestrian().getFirstHalfPerson().get() <= 0) {
+				moveUntilTheEnd();			
+			}
+			if (!car.getIn() && road.getPedestrian().getSecondHalfPerson().get() <= 0) {
+				moveUntilTheEnd();					
+			}
 		} else {
 			// RED/GREEN signal: move until the end of the road
 			moveUntilTheEnd();
@@ -154,11 +179,9 @@ public class CarConsumer extends RealtimeThread {
 				car.setForwarding(0);
 				car.setFrontCar(nextRoad.getLatestCar());
 				nextRoad.setLatestCar(car);
-				try {
-					car.getRoad().getInCars().put(road.getInCars().take());
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				
+				road.getTotalInCars().decrementAndGet();
+				car.getRoad().getTotalInCars().incrementAndGet();
 				return true;
 			}
 		} else {
@@ -170,11 +193,9 @@ public class CarConsumer extends RealtimeThread {
 				car.setForwarding(0);
 				car.setFrontCar(nextRoad.getLatestCar());
 				nextRoad.setLatestCar(car);
-				try {
-					car.getRoad().getOutCars().put(road.getInCars().take());
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				
+				road.getTotalInCars().decrementAndGet();
+				car.getRoad().getTotalOutCars().incrementAndGet();
 				return true;				
 			}
 		}

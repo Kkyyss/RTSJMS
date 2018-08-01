@@ -1,17 +1,22 @@
 package ky.model;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class Car {
 	private String name;
 	private Components bj;
 	private Traffic tf;
 	private Road road;
+	private boolean isLeave;
 	private Boolean in;
 	private int length = 1;
 	private int forwarding = 0;
 	private Car frontCar;
 
+	public boolean isLeave() {
+		return isLeave;
+	}
+	public void setLeave(boolean isLeave) {
+		this.isLeave = isLeave;
+	}
 	public Car getFrontCar() {
 		return frontCar;
 	}
@@ -68,8 +73,8 @@ public class Car {
 		return forwarding;
 	}
 	public void increaseForward(int num) {
-		System.out.println(name + " moving forward...");
 		forwarding += num;
+		System.out.println(name + " moving forward " + forwarding + "/" + length);
 	}
 
 	public void setForwarding(int forwarding) {

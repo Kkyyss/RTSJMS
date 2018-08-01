@@ -15,8 +15,9 @@ public class PersonConsumer extends RealtimeThread {
 	private RelativeTime start, period;
 	private ReleaseParameters rp;
 	private boolean isFallDown = false;
+	private boolean in;
 	
-	public PersonConsumer(String name, Pedestrian pedestrian, Person person) {
+	public PersonConsumer(String name, Pedestrian pedestrian, Person person, Boolean in) {
 		super();
 		start = new RelativeTime(1000, 0);
 		period = new RelativeTime(1000, 0);
@@ -25,6 +26,7 @@ public class PersonConsumer extends RealtimeThread {
 		super.setName(name);
 		this.person = person;
 		this.pedestrian = pedestrian;
+		this.in = in;
 	}
 	
 	public void run() {
@@ -41,9 +43,23 @@ public class PersonConsumer extends RealtimeThread {
 				
 				if (!isFallDown) {
 					if (person.getForwarding() == pedestrian.getLength()) {
-						pedestrian.decreasePerson();
+						if (in) {
+							pedestrian.getFirstHalfPerson().decrementAndGet();
+						} else {
+							pedestrian.getSecondHalfPerson().decrementAndGet();
+						}
 						System.out.println(person.getName() + " leave...");
 						return;
+					}
+					
+					if (person.getForwarding() == pedestrian.getLength() - 1) {
+						if (in) {
+							pedestrian.getFirstHalfPerson().decrementAndGet();
+							pedestrian.getSecondHalfPerson().incrementAndGet();
+						} else {
+							pedestrian.getSecondHalfPerson().decrementAndGet();
+							pedestrian.getFirstHalfPerson().incrementAndGet();
+						}						
 					}
 					period = new RelativeTime(1000, 0);
 					rp = new PeriodicParameters(period);

@@ -6,7 +6,8 @@ public class Pedestrian {
 	private String name;
 	private int index;
 	private int length = 2;
-	private AtomicInteger totalPerson = new AtomicInteger(0);
+	private AtomicInteger firstHalfPerson = new AtomicInteger(0);
+	private AtomicInteger secondHalfPerson = new AtomicInteger(0);
 
 	public Pedestrian(String name, int index) {
 		this.name = name;
@@ -35,18 +36,19 @@ public class Pedestrian {
 		this.index = index;
 	}
 
-	public AtomicInteger getTotalPerson() {
-		return totalPerson;
+	public AtomicInteger getFirstHalfPerson() {
+		return firstHalfPerson;
 	}
 
-	public void setTotalPerson(AtomicInteger totalPerson) {
-		this.totalPerson = totalPerson;
+	public void setFirstHalfPerson(AtomicInteger firstHalfPerson) {
+		this.firstHalfPerson = firstHalfPerson;
 	}
-	
-	public void increasePerson() {
-		totalPerson.incrementAndGet();
+
+	public AtomicInteger getSecondHalfPerson() {
+		return secondHalfPerson;
 	}
-	public void decreasePerson() {
-		totalPerson.decrementAndGet();
-	}
+
+	public void setSecondHalfPerson(AtomicInteger secondHalfPerson) {
+		this.secondHalfPerson = secondHalfPerson;
+	}	
 }

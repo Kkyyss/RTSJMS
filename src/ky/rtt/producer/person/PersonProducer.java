@@ -20,6 +20,7 @@ public class PersonProducer extends RealtimeThread {
 		super.setName(name);
 		this.com = com;
 		this.road = road;
+		this.in = in;
 	}
 	
 	public void run() {
@@ -32,7 +33,13 @@ public class PersonProducer extends RealtimeThread {
 			person.setCom(com);
 			person.setRoad(road);
 			System.out.println(name + " produced.");
-			PersonConsumer pc = new PersonConsumer("PC-" + name, road.getPedestrian(), person);
+			if (in) {
+				road.getPedestrian().getFirstHalfPerson().incrementAndGet();
+			} else {
+				road.getPedestrian().getSecondHalfPerson().incrementAndGet();
+			}
+			
+			PersonConsumer pc = new PersonConsumer("PC-" + name, road.getPedestrian(), person, in);
 //			PersonConsumerCensor censor = new PersonConsumerCensor(pc);
 			pc.start();
 //			censor.start();

@@ -5,14 +5,7 @@ public class Person {
 	private Components com;
 	private Road road;
 	private int forwarding;
-	private Person frontPerson;
 
-	public Person getFrontPerson() {
-		return frontPerson;
-	}
-	public void setFrontPerson(Person frontPerson) {
-		this.frontPerson = frontPerson;
-	}
 	public String getName() {
 		return name;
 	}
