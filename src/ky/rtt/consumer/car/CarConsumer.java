@@ -42,7 +42,7 @@ public class CarConsumer extends RealtimeThread {
 				if (linkedTf == null && !car.getIn()) {
 					System.out.println(car.getName() + " leave...");
 					road.getTotalOutCars().decrementAndGet();
-					car.setLeave(true);;
+					car.setLeave(true);
 					return;
 				}
 			}
@@ -50,13 +50,11 @@ public class CarConsumer extends RealtimeThread {
 			switch (road.getLight()) {
 			case GREEN:
 				// Only traffic light turned into GREEN and change direction.
-				if (road.getLight() == Light.GREEN) {
-					if (car.getForwarding() == road.getLength()) {
-						if (changeDirection(car, tf, road)) {
-							road = car.getRoad();
-							car.setName(car.getName() + " -> " + road.getName());
-							car.increaseForward(1);
-						}
+				if (car.getForwarding() == road.getLength()) {
+					if (changeDirection(car, tf, road)) {
+						road = car.getRoad();
+						car.setName(car.getName() + " -> " + road.getName());
+						car.increaseForward(1);
 					}
 				}
 				break;
@@ -164,12 +162,12 @@ public class CarConsumer extends RealtimeThread {
 			// 1 - From any direction-left
 			// 2 - From any direction-right
 			if (!nextRoad.isInCarsMax()) {
-				switch(road.getDirection()) {
+				switch(direction) {
 				case LEFT:
-					car.setRoad(linkedTf.getLeftRoad());
+					car.setRoad(linkedTf.getRightRoad());
 					break;
 				case RIGHT:
-					car.setRoad(linkedTf.getRightRoad());
+					car.setRoad(linkedTf.getLeftRoad());
 					break;
 				default:
 					System.out.println("Who on earth cast this magic...");
@@ -234,6 +232,40 @@ public class CarConsumer extends RealtimeThread {
 				case DOWN:
 					int startIdx = road.getLength() - road.getCondominium().getStartIdx() + 1;
 					int endIdx = road.getLength() - road.getCondominium().getEndIdx() + 1;
+					return car.getForwarding() + 1 >= startIdx
+							&& car.getForwarding() + 1 <= endIdx;
+					default:
+						System.out.println("Who on earth cast this magic...");
+						break;
+				}			
+			}			
+		}
+
+		return false;
+	}
+	public boolean nearSchool() {
+		if (road.getSchool() != null) {
+			if (car.getIn()) {
+				switch (road.getDirection()) {
+				case LEFT:
+				case TOP:
+				case RIGHT:
+				case DOWN:
+					return 
+							car.getForwarding() + 1 >= road.getSchool().getStartIdx() &&
+							car.getForwarding() + 1 <= road.getSchool().getEndIdx();
+					default:
+						System.out.println("Who on earth cast this magic...");
+						break;
+				}
+			} else {
+				switch (road.getDirection()) {
+				case LEFT:
+				case TOP:
+				case RIGHT:
+				case DOWN:
+					int startIdx = road.getLength() - road.getSchool().getStartIdx() + 1;
+					int endIdx = road.getLength() - road.getSchool().getEndIdx() + 1;
 					return car.getForwarding() + 1 >= startIdx
 							&& car.getForwarding() + 1 <= endIdx;
 					default:

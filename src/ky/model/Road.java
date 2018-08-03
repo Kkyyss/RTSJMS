@@ -1,5 +1,6 @@
 package ky.model;
 
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,13 +13,54 @@ public class Road {
 	private Direction direction;
 	private Light light = Light.RED;
 	private Condominium condominium;
+	private School school;
 	private int length = 3;
+	private boolean highway = false;
 	private Pedestrian pedestrian;
-	private AtomicInteger []floodArea;
+	private AtomicBoolean floodArea = new AtomicBoolean(false);
 	private Car latestCar;
 	private AtomicInteger totalInCars = new AtomicInteger(0);
 	private AtomicInteger totalOutCars = new AtomicInteger(0);
+	private int score;
+	private int time;
+	private int weight;
 
+	public boolean isHighway() {
+		return highway;
+	}
+	public void setHighway(boolean highway) {
+		this.highway = highway;
+	}
+	public int getTime() {
+		return time;
+	}
+	public void setTime(int time) {
+		this.time = time;
+	}
+	public int getWeight() {
+		return weight;
+	}
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+	public int getScore() {
+		return time * weight;
+	}
+	public void setScore(int score) {
+		this.score = score;
+	}
+	public School getSchool() {
+		return school;
+	}
+	public void setSchool(School school) {
+		this.school = school;
+	}
+	public boolean isAccidentOccurs() {
+		for (AtomicBoolean aa: accidentArea) {
+			if (aa.get() == true) return true;
+		}
+		return false;
+	}
 	public AtomicInteger getTotalInCars() {
 		return totalInCars;
 	}
@@ -31,10 +73,10 @@ public class Road {
 	public void setTotalOutCars(AtomicInteger totalOutCars) {
 		this.totalOutCars = totalOutCars;
 	}
-	public AtomicInteger[] getFloodArea() {
+	public AtomicBoolean getFloodArea() {
 		return floodArea;
 	}
-	public void setFloodArea(AtomicInteger[] floodArea) {
+	public void setFloodArea(AtomicBoolean floodArea) {
 		this.floodArea = floodArea;
 	}
 	public AtomicBoolean[] getAccidentArea() {
@@ -121,5 +163,14 @@ public class Road {
             return;
         }
     }
+	}
+	
+	public static class RoadsWeightRanking implements Comparator<Road> {
+
+		@Override
+		public int compare(Road o1, Road o2) {
+			return o1.getScore() < o2.getScore() ? -1 
+					: o1.getScore() == o2.getScore() ? 0 : 1;
+		}
 	}
 }

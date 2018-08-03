@@ -8,6 +8,24 @@ public class Pedestrian {
 	private int length = 2;
 	private AtomicInteger firstHalfPerson = new AtomicInteger(0);
 	private AtomicInteger secondHalfPerson = new AtomicInteger(0);
+	private AtomicInteger firstHalfFallDown = new AtomicInteger(0);
+	private AtomicInteger secondHalfFallDown = new AtomicInteger(0);
+
+	public AtomicInteger getFirstHalfFallDown() {
+		return firstHalfFallDown;
+	}
+
+	public void setFirstHalfFallDown(AtomicInteger firstHalfFallDown) {
+		this.firstHalfFallDown = firstHalfFallDown;
+	}
+
+	public AtomicInteger getSecondHalfFallDown() {
+		return secondHalfFallDown;
+	}
+
+	public void setSecondHalfFallDown(AtomicInteger secondHalfFallDown) {
+		this.secondHalfFallDown = secondHalfFallDown;
+	}
 
 	public Pedestrian(String name, int index) {
 		this.name = name;

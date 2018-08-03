@@ -19,7 +19,14 @@ public class CarConsumerHandler {
 		this.rtt = rtt;
 		this.name = name;
 	}
-	
+	public SpeedUp getSpeedup() {
+		return speedup;
+	}
+
+	public void setSpeedup(SpeedUp speedup) {
+		this.speedup = speedup;
+	}
+
 	public class SlowDown extends AsyncEventHandler {
 		private int speed = 3000;
 		public SlowDown() {};
@@ -40,12 +47,14 @@ public class CarConsumerHandler {
 			this.speed = speed;
 		}
 	}
+	
 	public class SpeedUp extends AsyncEventHandler {
 		private int speed = 1000;
 		public SpeedUp() {};
 		public SpeedUp(int speed) {
 			this.speed = speed;
 		}
+		
 		public void handleAsyncEvent() {
 			System.out.println(name + " speed up " + speed);
 			period = new RelativeTime(speed, 0);
@@ -59,16 +68,12 @@ public class CarConsumerHandler {
 			this.speed = speed;
 		}
 	}
+
 	public SlowDown getSlowdown() {
 		return slowdown;
 	}
+
 	public void setSlowdown(SlowDown slowdown) {
 		this.slowdown = slowdown;
-	}
-	public SpeedUp getSpeedup() {
-		return speedup;
-	}
-	public void setSpeedup(SpeedUp speedup) {
-		this.speedup = speedup;
 	}
 }

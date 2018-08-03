@@ -37,6 +37,14 @@ public class PersonConsumer extends RealtimeThread {
 		this.falldown = falldown;
 	}
 
+	public boolean isIn() {
+		return in;
+	}
+
+	public void setIn(boolean in) {
+		this.in = in;
+	}
+
 	public void run() {
 		while (true) {
 			// tripping and falling
@@ -66,9 +74,15 @@ public class PersonConsumer extends RealtimeThread {
 					}
 					person.increaseForward(1);
 				} else {
+					if (in) {
+						person.getRoad().getPedestrian().getFirstHalfFallDown().incrementAndGet();	
+					} else {
+						person.getRoad().getPedestrian().getSecondHalfFallDown().incrementAndGet();
+					}
+					
 					System.out.println(person.getName() + " falling down...");
 					start = new RelativeTime();
-					period = new RelativeTime(1000, 0);
+					period = new RelativeTime(5000, 0);
 					rp = new PeriodicParameters(start, period);
 					FallDownCensor fdc = new FallDownCensor(rp, this);
 					fdc.start();

@@ -5,41 +5,60 @@ import javax.realtime.RealtimeThread;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
+import ky.Utils.MyUtils;
+import ky.model.Components;
 import ky.model.Direction;
 import ky.model.Light;
 import ky.model.Road;
 import ky.model.Traffic;
+import ky.model.Weather;
 
 public class RoadConsumer extends RealtimeThread {
 	private Road road;
 	private Direction direction;
 	private Traffic tf;
+	private Components com;
 	private int wait = 0;
-	private boolean isGreen = false;
+	private boolean green = false;
 	private RelativeTime start, period;
 	
-	public RoadConsumer(String name, ReleaseParameters rp, Direction direction, Traffic tf) {
+	public Components getCom() {
+		return com;
+	}
+
+	public Road getRoad() {
+		return road;
+	}
+
+	public void setRoad(Road road) {
+		this.road = road;
+	}
+
+	public void setCom(Components com) {
+		this.com = com;
+	}
+	public RoadConsumer(String name, ReleaseParameters rp, 
+			Road road, Traffic tf, Components com) {
 		super(null, rp);
 		super.setName(name);
-		this.direction = direction;
 		this.tf = tf;
-		this.road = tf.getRoad(direction);
+		this.road = road;
+		this.com = com;
 	}
 	
 	public void run() {
 		while (true) {
-			if (road.getLight() == Light.GREEN) {
-				isGreen = false;
-				road.setLight(Light.RED);
-				System.out.println(road.getName() + "'s traffic light into RED");
-				period = new RelativeTime(18000, 0);
-				setReleaseParameters(new PeriodicParameters(period));
-			} else {
-				isGreen = true;
-				road.setLight(Light.GREEN);
-				System.out.println(road.getName() + "'s traffic light into GREEN");
-				period = new RelativeTime(6000, 0);
-				setReleaseParameters(new PeriodicParameters(period));		
+			if (!road.getFloodArea().get()) {
+				if (com.getWeather() == Weather.RAIN 
+						|| com.getWeather() == Weather.THUNDERSTORM) {
+					if (MyUtils.getRandomEventOccur()) {
+						road.getFloodArea().set(true);
+						start = new RelativeTime(6000, 0);
+						period = new RelativeTime(1000, 0);
+						FloodCensor fc = new FloodCensor(new PeriodicParameters(start, period), this);
+						fc.start();
+					}
+				}
 			}
 			waitForNextPeriod();
 		}

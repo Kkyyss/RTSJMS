@@ -18,6 +18,12 @@ public class FallDownCensor extends RealtimeThread {
 	public void run() {
 		rtt.setFalldown(false);
 		System.out.println("Fall down buff gone...");
+		if (rtt.isIn()) {
+			rtt.getPerson().getRoad().getPedestrian().getFirstHalfFallDown().decrementAndGet();	
+		} else {
+			rtt.getPerson().getRoad().getPedestrian().getSecondHalfFallDown().decrementAndGet();	
+		}
+		
 		period = new RelativeTime(1000, 0);
 		rp = new PeriodicParameters(period);
 		rtt.setReleaseParameters(rp);

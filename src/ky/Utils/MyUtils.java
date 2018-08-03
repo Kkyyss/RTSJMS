@@ -88,8 +88,8 @@ public class MyUtils {
 	
 	public static boolean getRandomEventOccur() {
 		Random rand = new Random();
-		int res = rand.nextInt(9) + 1;
-		if (res > 8) return true;
+		int res = rand.nextInt(99) + 1;
+		if (res > 90) return true;
 		else return false;
 	}
 	
