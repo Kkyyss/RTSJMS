@@ -74,7 +74,6 @@ public class Car {
 	}
 	public void increaseForward(int num) {
 		forwarding += num;
-		System.out.println(name + " moving forward " + forwarding + "/" + road.getLength());
 	}
 
 	public void setForwarding(int forwarding) {

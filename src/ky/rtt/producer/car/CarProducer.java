@@ -3,6 +3,7 @@ package ky.rtt.producer.car;
 import javax.realtime.RealtimeThread;
 import javax.realtime.ReleaseParameters;
 
+import ky.Utils.MyUtils;
 import ky.model.Car;
 import ky.model.Components;
 import ky.model.Road;
@@ -55,7 +56,7 @@ public class CarProducer extends RealtimeThread {
 	public void run() { 
 		while (true) {
 			carID++;
-			String name = super.getName() + "-CAR-" + carID;
+			String name = super.getName() + "_CAR_" + carID;
 			Car car = new Car();
 			car.setName(name);
 			car.setBj(bj);
@@ -63,11 +64,11 @@ public class CarProducer extends RealtimeThread {
 			car.setRoad(road);
 			car.setFrontCar(previousCar);
 			car.setIn(true);
-			System.out.println(name + " produced.");
+			MyUtils.log(tf.getIndex(), name + " produced.");
 			road.getTotalInCars().incrementAndGet();
 			previousCar = car;
 			if (road.isInCarsMax())
-				System.out.println(road.getName() + " fulled...");
+				MyUtils.log(tf.getIndex(), road.getName() + " fulled...");
 			
 			CarConsumer cc = new CarConsumer("CC-" + name, car);
 			CarConsumerCensor censor = new CarConsumerCensor(cc);

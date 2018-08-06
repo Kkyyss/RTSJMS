@@ -71,6 +71,7 @@ public class Container {
 			Road rightRoad = new Road(tfName + "_ROAD_RIGHT", Direction.RIGHT, 5);
 					
 			Traffic tf = new Traffic(
+					i+1,
 					tfName,
 					leftRoad, topRoad, downRoad, rightRoad);
 			com.getTfs().add(tf);
@@ -88,12 +89,12 @@ public class Container {
 					RelativeTime period = new RelativeTime(7000, 0);
 					ReleaseParameters rp = new PeriodicParameters(start, period);
 					// IN
-					pp1 = new PersonProducer("PP-TOP-FIRST", rp, com, road, true);
+					pp1 = new PersonProducer(road.getPedestrian().getName() + "_FIRST", rp, com, road, tf, true);
 					start = new RelativeTime(5000, 0);
 					period = new RelativeTime(9000, 0);
 					rp = new PeriodicParameters(start, period);
 					// OUT
-					pp2 = new PersonProducer("PP-RIGHT-FIRST", rp, com, road, false);
+					pp2 = new PersonProducer(road.getPedestrian().getName() + "_SECOND", rp, com, road, tf, false);
 					pps1 = new PersonProducerCensor(pp1);
 					pps2 = new PersonProducerCensor(pp2);
 					pp1.start();

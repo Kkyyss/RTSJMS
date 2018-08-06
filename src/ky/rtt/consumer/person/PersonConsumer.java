@@ -8,9 +8,11 @@ import javax.realtime.ReleaseParameters;
 import ky.Utils.MyUtils;
 import ky.model.Pedestrian;
 import ky.model.Person;
+import ky.model.Traffic;
 
 public class PersonConsumer extends RealtimeThread {
 	private Person person;
+	private Traffic tf;
 	private Pedestrian pedestrian;
 	private RelativeTime start, period;
 	private ReleaseParameters rp;
@@ -25,10 +27,19 @@ public class PersonConsumer extends RealtimeThread {
 		setReleaseParameters(rp);
 		super.setName(name);
 		this.person = person;
+		this.tf = person.getTf();
 		this.pedestrian = pedestrian;
 		this.in = in;
 	}
 	
+	public Traffic getTf() {
+		return tf;
+	}
+
+	public void setTf(Traffic tf) {
+		this.tf = tf;
+	}
+
 	public boolean isFalldown() {
 		return falldown;
 	}
@@ -59,7 +70,7 @@ public class PersonConsumer extends RealtimeThread {
 						} else {
 							pedestrian.getSecondHalfPerson().decrementAndGet();
 						}
-						System.out.println(person.getName() + " leave...");
+						MyUtils.log(tf.getIndex(), person.getName() + " leave...");
 						return;
 					}
 					
@@ -73,6 +84,9 @@ public class PersonConsumer extends RealtimeThread {
 						}						
 					}
 					person.increaseForward(1);
+					MyUtils.log(tf.getIndex(), 
+							person.getName() + " moving forwarding " + 
+							person.getForwarding() + "/" + person.getRoad().getPedestrian().getLength());
 				} else {
 					if (in) {
 						person.getRoad().getPedestrian().getFirstHalfFallDown().incrementAndGet();	
@@ -80,7 +94,7 @@ public class PersonConsumer extends RealtimeThread {
 						person.getRoad().getPedestrian().getSecondHalfFallDown().incrementAndGet();
 					}
 					
-					System.out.println(person.getName() + " falling down...");
+					MyUtils.log(tf.getIndex(), person.getName() + " falling down...");
 					start = new RelativeTime();
 					period = new RelativeTime(5000, 0);
 					rp = new PeriodicParameters(start, period);

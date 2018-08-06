@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ky.Utils.MyUtils;
 
 public class Road {
-	private AtomicBoolean []accidentArea;
+	private boolean isAccidentArea;
 	private String name;
 	private Traffic linkedTraffic;
 	private Direction direction;
@@ -25,6 +25,12 @@ public class Road {
 	private int time;
 	private int weight;
 
+	public boolean isAccidentArea() {
+		return isAccidentArea;
+	}
+	public void setAccidentArea(boolean isAccidentArea) {
+		this.isAccidentArea = isAccidentArea;
+	}
 	public boolean isHighway() {
 		return highway;
 	}
@@ -55,12 +61,6 @@ public class Road {
 	public void setSchool(School school) {
 		this.school = school;
 	}
-	public boolean isAccidentOccurs() {
-		for (AtomicBoolean aa: accidentArea) {
-			if (aa.get() == true) return true;
-		}
-		return false;
-	}
 	public AtomicInteger getTotalInCars() {
 		return totalInCars;
 	}
@@ -78,12 +78,6 @@ public class Road {
 	}
 	public void setFloodArea(AtomicBoolean floodArea) {
 		this.floodArea = floodArea;
-	}
-	public AtomicBoolean[] getAccidentArea() {
-		return accidentArea;
-	}
-	public void setAccidentArea(AtomicBoolean[] accidentArea) {
-		this.accidentArea = accidentArea;
 	}
 	public Car getLatestCar() {
 		return latestCar;
@@ -113,8 +107,6 @@ public class Road {
 		this.direction = direction;
 		this.name = name;
 		this.length = length;
-		accidentArea = new AtomicBoolean[length];
-		MyUtils.initialArrayOfAtomicBooleanVal(accidentArea);
 	}
 	public Direction getDirection() {
 		return direction;

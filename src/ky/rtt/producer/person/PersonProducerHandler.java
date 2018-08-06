@@ -4,10 +4,11 @@ import javax.realtime.AsyncEventHandler;
 import javax.realtime.PeriodicParameters;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
-import javax.realtime.Schedulable;
+
+import ky.Utils.MyUtils;
 
 public class PersonProducerHandler {
-	private Schedulable sc;
+	private PersonProducer rtt;
 	private String name;
 	private SlowDown slowdown = new SlowDown();
 	private SpeedUp speedup = new SpeedUp();
@@ -15,26 +16,26 @@ public class PersonProducerHandler {
 	RelativeTime period;
 	ReleaseParameters rp;
 	
-	public PersonProducerHandler(String name, Schedulable sc) {
-		this.sc = sc;
+	public PersonProducerHandler(String name, PersonProducer rtt) {
+		this.rtt = rtt;
 		this.name = name;
 	}
 	
 	public class SlowDown extends AsyncEventHandler {
 		public void handleAsyncEvent() {
-			System.out.println(name + " slow down...");
+			MyUtils.log(rtt.getTf().getIndex(), name + " slow down...");
 			period = new RelativeTime(5000, 0);
 			rp = new PeriodicParameters(period);
-			sc.setReleaseParameters(rp);
+			rtt.setReleaseParameters(rp);
 		}
 	}
 	
 	public class SpeedUp extends AsyncEventHandler {
 		public void handleAsyncEvent() {
-			System.out.println(name + " speed up...");
+			MyUtils.log(rtt.getTf().getIndex(), name + " speed up...");
 			period = new RelativeTime(2000, 0);
 			rp = new PeriodicParameters(period);
-			sc.setReleaseParameters(rp);
+			rtt.setReleaseParameters(rp);
 		}
 	}
 

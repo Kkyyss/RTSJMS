@@ -5,6 +5,8 @@ import javax.realtime.RealtimeThread;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
+import ky.Utils.MyUtils;
+
 public class FallDownCensor extends RealtimeThread {
 	private PersonConsumer rtt;
 	private RelativeTime start, period;
@@ -17,7 +19,7 @@ public class FallDownCensor extends RealtimeThread {
 	
 	public void run() {
 		rtt.setFalldown(false);
-		System.out.println("Fall down buff gone...");
+		MyUtils.log(rtt.getTf().getIndex(),rtt.getPerson().getName() + " standing up...");
 		if (rtt.isIn()) {
 			rtt.getPerson().getRoad().getPedestrian().getFirstHalfFallDown().decrementAndGet();	
 		} else {

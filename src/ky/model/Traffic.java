@@ -1,22 +1,20 @@
 package ky.model;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class Traffic {
 	private String name;
+	private int index;
 	private int centerArea = 400;
 	private Road leftRoad, topRoad, downRoad, rightRoad;
-	private AtomicBoolean prolong = new AtomicBoolean(false);
 
-	public AtomicBoolean getProlong() {
-		return prolong;
+	public int getIndex() {
+		return index;
 	}
-	public void setProlong(AtomicBoolean prolong) {
-		this.prolong = prolong;
+	public void setIndex(int index) {
+		this.index = index;
 	}
-	
-	public Traffic(String name,
+	public Traffic(int index, String name,
 			Road leftRoad, Road topRoad, Road downRoad, Road rightRoad) {
+		this.index = index;
 		this.leftRoad = leftRoad;
 		this.topRoad = topRoad;
 		this.downRoad = downRoad;

@@ -6,7 +6,14 @@ public class Person {
 	private Road road;
 	private int forwarding;
 	private boolean leave;
+	private Traffic tf;
 
+	public Traffic getTf() {
+		return tf;
+	}
+	public void setTf(Traffic tf) {
+		this.tf = tf;
+	}
 	public boolean isLeave() {
 		return leave;
 	}
@@ -39,6 +46,5 @@ public class Person {
 	}
 	public void increaseForward(int num) {
 		forwarding += num;
-		System.out.println(name + " moving forwarding " + forwarding + "/" + road.getPedestrian().getLength());
 	}
 }

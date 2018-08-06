@@ -24,7 +24,9 @@ public class WeatherConsumer extends RealtimeThread {
 				System.out.println("Getting random weather instead of WEATHER API");
 				com.setWeather(MyUtils.getRandomWeather());
 			}
-			System.out.println("WEATHER: " + com.getWeather());
+			System.out.println("==============================================\n"
+					+ "WEATHER -> " + com.getWeather() + "\n"
+							+ "==============================================");
 			waitForNextPeriod();
 		}
 	}

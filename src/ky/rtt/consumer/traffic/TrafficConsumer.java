@@ -8,6 +8,7 @@ import javax.realtime.RealtimeThread;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
+import ky.Utils.MyUtils;
 import ky.model.Components;
 import ky.model.Light;
 import ky.model.Road;
@@ -35,8 +36,16 @@ public class TrafficConsumer extends RealtimeThread {
 		this.downRoad = tf.getDownRoad();
 	}
 	
+	public Traffic getTf() {
+		return tf;
+	}
+
+	public void setTf(Traffic tf) {
+		this.tf = tf;
+	}
+
 	public void run() {
-		System.out.println(super.getName() + " started...");
+		MyUtils.log(tf.getIndex(), super.getName() + " started...");
 		while(true) {
 			// Prioritize traffic signal
 			topRoad.setTime(trafficTime(topRoad));
@@ -61,10 +70,10 @@ public class TrafficConsumer extends RealtimeThread {
 			}
 			
 			highestScoreRoad.setLight(Light.GREEN);
-			System.out.println(highestScoreRoad.getName() + "'s traffic light turned into GREEN");
+			MyUtils.log(tf.getIndex(), highestScoreRoad.getName() + "'s traffic light turned into GREEN");
 			start = new RelativeTime(highestScoreRoad.getTime(), 0);
 			period = new RelativeTime(1000, 0);
-			TrafficConsumerCensor tcc = new TrafficConsumerCensor(new PeriodicParameters(start, period), this);
+			TrafficConsumerCensor tcc = new TrafficConsumerCensor(new PeriodicParameters(start, period), this, com);
 			tcc.start();
 			period = new RelativeTime(highestScoreRoad.getTime() + 500, 0);
 			setReleaseParameters(new PeriodicParameters(period));
@@ -85,9 +94,6 @@ public class TrafficConsumer extends RealtimeThread {
 		
 		if (com.getWeather() == Weather.RAIN || com.getWeather() == Weather.THUNDERSTORM) {
 			time += 2000;
-		}
-		if (road.isAccidentOccurs()) {
-			time += 3000;
 		}
 		if (road.getFloodArea().get()) {
 			time += 3000;

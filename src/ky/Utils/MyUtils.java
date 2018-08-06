@@ -103,4 +103,23 @@ public class MyUtils {
 			arr[i] = new AtomicBoolean(false);
 		}
 	}
+	
+	public static void log(int trafficNo, String any) {
+		String prefix = "";
+		switch (trafficNo) {
+		case 1:
+			break;
+		case 2:
+			prefix = "\t\t\t";
+			break;
+		case 3:
+			prefix = "\t\t\t\t\t\t";
+			break;
+		case 4:
+			prefix = "\t\t\t\t\t\t\t\t\t";
+			break;
+		}
+		
+		System.out.println(prefix + any);
+	}
 }

@@ -6,8 +6,10 @@ import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 import javax.realtime.Schedulable;
 
+import ky.Utils.MyUtils;
+
 public class CarConsumerHandler {
-	private Schedulable rtt;
+	private CarConsumer rtt;
 	private String name;
 	private SlowDown slowdown = new SlowDown();
 	private SpeedUp speedup = new SpeedUp();
@@ -15,7 +17,7 @@ public class CarConsumerHandler {
 	RelativeTime period;
 	ReleaseParameters rp;
 	
-	public CarConsumerHandler(String name, Schedulable rtt) {
+	public CarConsumerHandler(String name, CarConsumer rtt) {
 		this.rtt = rtt;
 		this.name = name;
 	}
@@ -35,7 +37,7 @@ public class CarConsumerHandler {
 		}
 		
 		public void handleAsyncEvent() {
-			System.out.println(name + " slow down " + speed);
+			MyUtils.log(rtt.getTf().getIndex(), name + " slow down " + speed);
 			period = new RelativeTime(speed, 0);
 			rp = new PeriodicParameters(period);
 			rtt.setReleaseParameters(rp);
@@ -56,7 +58,7 @@ public class CarConsumerHandler {
 		}
 		
 		public void handleAsyncEvent() {
-			System.out.println(name + " speed up " + speed);
+			MyUtils.log(rtt.getTf().getIndex(), name + " speed up " + speed);
 			period = new RelativeTime(speed, 0);
 			rp = new PeriodicParameters(period);
 			rtt.setReleaseParameters(rp);

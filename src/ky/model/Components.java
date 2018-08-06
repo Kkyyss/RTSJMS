@@ -7,7 +7,14 @@ public class Components {
 	private String name;
 	private List<Traffic> tfs = new ArrayList<>();
 	private Weather weather;
+	private boolean accidentOccurs;
 	
+	public boolean isAccidentOccured() {
+		return accidentOccurs;
+	}
+	public void setAccidentOccurs(boolean accidentOccurs) {
+		this.accidentOccurs = accidentOccurs;
+	}
 	public Weather getWeather() {
 		return weather;
 	}

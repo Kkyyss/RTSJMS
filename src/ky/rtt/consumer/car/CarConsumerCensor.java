@@ -6,6 +6,7 @@ import javax.realtime.RealtimeThread;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
+import ky.Utils.MyUtils;
 import ky.model.Car;
 import ky.model.Road;
 
@@ -30,33 +31,37 @@ public class CarConsumerCensor extends RealtimeThread {
 		speedEvt.addHandler(cch.getSpeedup());
 	}
 	
+	public CarConsumer getRtt() {
+		return rtt;
+	}
+
+	public void setRtt(CarConsumer rtt) {
+		this.rtt = rtt;
+	}
+
 	public void run() {
-		System.out.println(rtt.getName() + " censor started...");
+		MyUtils.log(rtt.getTf().getIndex(), rtt.getName() + " consumer censor started...");
 		while(!rtt.getCar().isLeave()) {
 			Car car = rtt.getCar();
 			Road road = car.getRoad();
 			boolean acc = false;
 			
 			if (car.getForwarding() > 0) {
-				acc = road.getAccidentArea()[car.getForwarding() - 1].get();
+				acc = road.isAccidentArea();
 			}
 			int speed = 0;
 			// Buffs to slow down car
 			if (!isSlow) {
 				if (rtt.nearSchool()) {
-					System.out.println("Near School");
+					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " near school...");
 					speed += 2000;
 				}
 				if (rtt.nearCondo()) {
-					System.out.println("Near Condo");
-					speed += 3000;
-				}
-				if (acc) {
-					System.out.println("Accident Area...");
+					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " near condo...");
 					speed += 3000;
 				}
 				if (rtt.getCar().getRoad().getFloodArea().get()) {
-					System.out.println("Flooded Area...");
+					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " heading to flooded area...");
 					speed += 4000;				
 				}
 				if (speed > 0) {
@@ -79,6 +84,5 @@ public class CarConsumerCensor extends RealtimeThread {
 			
 			waitForNextPeriod();
 		}
-		System.out.println(rtt.getName() + " censor ended...");
 	}
 }

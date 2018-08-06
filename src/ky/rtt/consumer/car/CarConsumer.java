@@ -1,7 +1,5 @@
 package ky.rtt.consumer.car;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.realtime.PeriodicParameters;
 import javax.realtime.RealtimeThread;
 import javax.realtime.RelativeTime;
@@ -20,6 +18,8 @@ public class CarConsumer extends RealtimeThread {
 	private Road road;
 	private RelativeTime start, period;
 	private ReleaseParameters rp;
+	private Components bj;
+	private Traffic tf;
 
 	public CarConsumer(String name, Car car) {
 		super();
@@ -28,11 +28,12 @@ public class CarConsumer extends RealtimeThread {
 		setReleaseParameters(rp);
 		super.setName(name);
 		this.car = car;
+		this.bj = car.getBj();
+		this.tf = car.getTf();
 	}
 	
 	public void run() {
 		while (!car.isLeave()) {
-			Components bj = car.getBj();
 			road = car.getRoad();
 			Traffic tf = car.getTf();
 			Traffic linkedTf = road.getLinkedTraffic();
@@ -40,7 +41,7 @@ public class CarConsumer extends RealtimeThread {
 			// Car going out and not linked with others traffic
 			if (car.getForwarding() == road.getLength()) {
 				if (linkedTf == null && !car.getIn()) {
-					System.out.println(car.getName() + " leave...");
+					MyUtils.log(tf.getIndex(), car.getName() + " leave...");
 					road.getTotalOutCars().decrementAndGet();
 					car.setLeave(true);
 					return;
@@ -53,8 +54,10 @@ public class CarConsumer extends RealtimeThread {
 				if (car.getForwarding() == road.getLength()) {
 					if (changeDirection(car, tf, road)) {
 						road = car.getRoad();
+						tf = car.getTf();
 						car.setName(car.getName() + " -> " + road.getName());
 						car.increaseForward(1);
+						MyUtils.log(tf.getIndex(), car.getName() + " moving forward " + car.getForwarding() + "/" + road.getLength());
 					}
 				}
 				break;
@@ -74,27 +77,27 @@ public class CarConsumer extends RealtimeThread {
 		}
 	}
 	
+	public Traffic getTf() {
+		return tf;
+	}
+
+	public void setTf(Traffic tf) {
+		this.tf = tf;
+	}
+
 	private void accidentMayOccur() {
 		int carIdx = car.getForwarding();
 		int frontCarIdx = car.getFrontCar().getForwarding();
-		AtomicBoolean []arr= road.getAccidentArea();
 		
 		if (carIdx > 0 && carIdx + 1 == frontCarIdx) {
-			if (arr[carIdx - 1].get() || arr[frontCarIdx - 1].get()) {
-				return;
-			}
 			if (MyUtils.getRandomEventOccur()) {
 				System.out.println("Oops...an acciddent happens in " + road.getName());
-				arr[carIdx - 1].set(true);
-				arr[frontCarIdx - 1].set(true);
 				// Accident buff up to 8s
 				start = new RelativeTime(8000, 0);
 				period = new RelativeTime(1000, 0);
 				rp = new PeriodicParameters(start, period);
-				AccidentCensor ac1 = new AccidentCensor(rp, arr[carIdx - 1]);
-				AccidentCensor ac2 = new AccidentCensor(rp, arr[frontCarIdx - 1]);
-				ac1.start();
-				ac2.start();
+				AccidentCensor ac = new AccidentCensor(rp, road, bj);
+				ac.start();
 				
 				car.setLeave(true);
 				car.getFrontCar().setLeave(true);
@@ -120,7 +123,8 @@ public class CarConsumer extends RealtimeThread {
 		} else {
 			// RED/GREEN signal: move until behind the front car
 			moveUntilFrontCarBehind();
-			accidentMayOccur();
+			if (!bj.isAccidentOccured() && road.getLight() == Light.GREEN)
+				accidentMayOccur();
 		}
 	}
 	
@@ -143,12 +147,14 @@ public class CarConsumer extends RealtimeThread {
 	private void moveUntilTheEnd() {
 		if (car.getForwarding() + 1 <= road.getLength()) {
 			car.increaseForward(1);
+			MyUtils.log(tf.getIndex(), car.getName() + " moving forward " + car.getForwarding() + "/" + road.getLength());
 		}
 	}
 	
 	private void moveUntilFrontCarBehind() {
 		if (car.getForwarding() + 1 < car.getFrontCar().getForwarding()) {
 			car.increaseForward(1);
+			MyUtils.log(tf.getIndex(), car.getName() + " moving forward " + car.getForwarding() + "/" + road.getLength());
 		}		
 	}
 	

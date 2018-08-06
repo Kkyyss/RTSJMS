@@ -2,6 +2,8 @@ package ky.rtt.producer.car;
 
 import javax.realtime.AsyncEventHandler;
 
+import ky.Utils.MyUtils;
+
 public class CarProducerHandler {
 	private CarProducer rtt;
 	private Stop stop = new Stop();
@@ -20,14 +22,14 @@ public class CarProducerHandler {
 
 	public class Stop extends AsyncEventHandler {
 		public void handleAsyncEvent() {
-			System.out.println(rtt.getName() + " nearly fulled...");
+			MyUtils.log(rtt.getTf().getIndex(), rtt.getName() + " nearly fulled...");
 			rtt.deschedulePeriodic();
 		}
 	}
 	
 	public class Start extends AsyncEventHandler {
 		public void handleAsyncEvent() {
-			System.out.println(rtt.getName() + " nearly empty...");
+			MyUtils.log(rtt.getTf().getIndex(), rtt.getName() + " nearly empty...");
 			rtt.schedulePeriodic();
 		}
 	}
