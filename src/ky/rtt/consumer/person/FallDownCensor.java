@@ -19,7 +19,7 @@ public class FallDownCensor extends RealtimeThread {
 	
 	public void run() {
 		rtt.setFalldown(false);
-		MyUtils.log(rtt.getTf().getIndex(),rtt.getPerson().getName() + " standing up...");
+		MyUtils.log(rtt.getTf().getIndex(),rtt.getPerson().getName() + " [START]");
 		if (rtt.isIn()) {
 			rtt.getPerson().getRoad().getPedestrian().getFirstHalfFallDown().decrementAndGet();	
 		} else {

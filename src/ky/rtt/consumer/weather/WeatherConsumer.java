@@ -17,16 +17,16 @@ public class WeatherConsumer extends RealtimeThread {
 	}
 	
 	public void run() {
-		System.out.println(super.getName() + " started...");
+		MyUtils.titleLog(super.getName() + " -> [openweathermap API] [START]");
 		while (true) {
 			com.setWeather(MyUtils.getCurrentWeather("Bukit Jalil", "a3c2995dcf357dbba9c7d78282aa1598"));
 			if (com.getWeather() == null) {
-				System.out.println("Getting random weather instead of WEATHER API");
+				MyUtils.titleLog("Getting random weather instead of WEATHER API");
 				com.setWeather(MyUtils.getRandomWeather());
+				MyUtils.titleLog("[RANDOM] " + com.getWeather().toString());
+			} else {
+				MyUtils.titleLog("[openweathermap API] " + com.getWeather().toString());
 			}
-			System.out.println("==============================================\n"
-					+ "WEATHER -> " + com.getWeather() + "\n"
-							+ "==============================================");
 			waitForNextPeriod();
 		}
 	}

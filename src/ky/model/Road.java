@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ky.Utils.MyUtils;
+import ky.rtt.consumer.road.RoadConsumer;
 
 public class Road {
 	private boolean isAccidentArea;
@@ -21,10 +21,14 @@ public class Road {
 	private Car latestCar;
 	private AtomicInteger totalInCars = new AtomicInteger(0);
 	private AtomicInteger totalOutCars = new AtomicInteger(0);
-	private int score;
-	private int time;
-	private int weight;
+	private RoadConsumer rc;
 
+	public RoadConsumer getRc() {
+		return rc;
+	}
+	public void setRc(RoadConsumer rc) {
+		this.rc = rc;
+	}
 	public boolean isAccidentArea() {
 		return isAccidentArea;
 	}
@@ -36,24 +40,6 @@ public class Road {
 	}
 	public void setHighway(boolean highway) {
 		this.highway = highway;
-	}
-	public int getTime() {
-		return time;
-	}
-	public void setTime(int time) {
-		this.time = time;
-	}
-	public int getWeight() {
-		return weight;
-	}
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
-	public int getScore() {
-		return time * weight;
-	}
-	public void setScore(int score) {
-		this.score = score;
 	}
 	public School getSchool() {
 		return school;
@@ -155,14 +141,5 @@ public class Road {
             return;
         }
     }
-	}
-	
-	public static class RoadsWeightRanking implements Comparator<Road> {
-
-		@Override
-		public int compare(Road o1, Road o2) {
-			return o1.getScore() < o2.getScore() ? -1 
-					: o1.getScore() == o2.getScore() ? 0 : 1;
-		}
 	}
 }

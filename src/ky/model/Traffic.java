@@ -1,11 +1,27 @@
 package ky.model;
 
+import javax.realtime.AsyncEvent;
+
 public class Traffic {
 	private String name;
 	private int index;
 	private int centerArea = 400;
 	private Road leftRoad, topRoad, downRoad, rightRoad;
-
+	private AsyncEvent trigger;
+	private boolean trafficAccident;
+	
+	public boolean isTrafficAccident() {
+		return trafficAccident;
+	}
+	public void setTrafficAccident(boolean trafficAccident) {
+		this.trafficAccident = trafficAccident;
+	}
+	public AsyncEvent getTrigger() {
+		return trigger;
+	}
+	public void setTrigger(AsyncEvent trigger) {
+		this.trigger = trigger;
+	}
 	public int getIndex() {
 		return index;
 	}

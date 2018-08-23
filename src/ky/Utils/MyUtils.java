@@ -88,8 +88,8 @@ public class MyUtils {
 	
 	public static boolean getRandomEventOccur() {
 		Random rand = new Random();
-		int res = rand.nextInt(99) + 1;
-		if (res > 90) return true;
+		int res = rand.nextInt(50) + 1;
+		if (res > 35) return true;
 		else return false;
 	}
 	
@@ -103,23 +103,22 @@ public class MyUtils {
 			arr[i] = new AtomicBoolean(false);
 		}
 	}
-	
-	public static void log(int trafficNo, String any) {
-		String prefix = "";
-		switch (trafficNo) {
-		case 1:
-			break;
-		case 2:
-			prefix = "\t\t\t";
-			break;
-		case 3:
-			prefix = "\t\t\t\t\t\t";
-			break;
-		case 4:
-			prefix = "\t\t\t\t\t\t\t\t\t";
-			break;
-		}
+	public static void titleLog(String title) {
+		// Center the title
 		
-		System.out.println(prefix + any);
+		log(String.format("%200s", "").replaceAll(" ", "=") + "\n"
+				+ String.format("%75s%-50s", "", title) + "\n"
+				+ String.format("%200s", "").replaceAll(" ", "="));
+	}
+	public static void log(String any) {
+		System.out.println(any);
+	}
+	public static void log(int trafficNo, String any) {
+		int spacing = trafficNo * 50;
+		// Right Pad + Left Pad
+		String str = "%" + ((spacing - 50 == 0) ? "" : spacing - 50) + "s%-" + 25 + "s";
+		str = String.format(str, "", any);
+		
+		System.out.println(str);
 	}
 }

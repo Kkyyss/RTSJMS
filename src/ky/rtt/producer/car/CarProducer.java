@@ -56,7 +56,7 @@ public class CarProducer extends RealtimeThread {
 	public void run() { 
 		while (true) {
 			carID++;
-			String name = super.getName() + "_CAR_" + carID;
+			String name = road.getName() + "_C" + carID;
 			Car car = new Car();
 			car.setName(name);
 			car.setBj(bj);
@@ -64,13 +64,13 @@ public class CarProducer extends RealtimeThread {
 			car.setRoad(road);
 			car.setFrontCar(previousCar);
 			car.setIn(true);
-			MyUtils.log(tf.getIndex(), name + " produced.");
+			MyUtils.log(tf.getIndex(), name + " [INC]");
 			road.getTotalInCars().incrementAndGet();
 			previousCar = car;
 			if (road.isInCarsMax())
-				MyUtils.log(tf.getIndex(), road.getName() + " fulled...");
+				MyUtils.log(tf.getIndex(), road.getName() + " [MAX]");
 			
-			CarConsumer cc = new CarConsumer("CC-" + name, car);
+			CarConsumer cc = new CarConsumer("CC_" + name, car);
 			CarConsumerCensor censor = new CarConsumerCensor(cc);
 			cc.start();
 			censor.start();

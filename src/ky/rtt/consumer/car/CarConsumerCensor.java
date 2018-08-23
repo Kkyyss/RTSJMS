@@ -40,7 +40,7 @@ public class CarConsumerCensor extends RealtimeThread {
 	}
 
 	public void run() {
-		MyUtils.log(rtt.getTf().getIndex(), rtt.getName() + " consumer censor started...");
+		//MyUtils.log(rtt.getTf().getIndex(), rtt.getName() + " consumer censor started...");
 		while(!rtt.getCar().isLeave()) {
 			Car car = rtt.getCar();
 			Road road = car.getRoad();
@@ -53,15 +53,15 @@ public class CarConsumerCensor extends RealtimeThread {
 			// Buffs to slow down car
 			if (!isSlow) {
 				if (rtt.nearSchool()) {
-					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " near school...");
+					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " [ENTERED] S");
 					speed += 2000;
 				}
 				if (rtt.nearCondo()) {
-					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " near condo...");
+					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " [ENTERED] CD");
 					speed += 3000;
 				}
 				if (rtt.getCar().getRoad().getFloodArea().get()) {
-					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " heading to flooded area...");
+					MyUtils.log(rtt.getTf().getIndex(), car.getName() + " [ENTERED] FA");
 					speed += 4000;				
 				}
 				if (speed > 0) {

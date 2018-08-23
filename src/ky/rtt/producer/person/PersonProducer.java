@@ -39,20 +39,20 @@ public class PersonProducer extends RealtimeThread {
 		while (true) {
 			personID++;
 			Person person = new Person();
-			String name = super.getName() + "_PERSON_" + personID;
+			String name = super.getName() + "_PS" + personID;
 			person.setName(name);
 			person.setForwarding(0);
 			person.setCom(com);
 			person.setRoad(road);
 			person.setTf(tf);
-			MyUtils.log(tf.getIndex(), name + " produced.");
+			MyUtils.log(tf.getIndex(), name + " [INC]");
 			if (in) {
 				road.getPedestrian().getFirstHalfPerson().incrementAndGet();
 			} else {
 				road.getPedestrian().getSecondHalfPerson().incrementAndGet();
 			}
 			
-			PersonConsumer pc = new PersonConsumer("PC-" + name, road.getPedestrian(), person, in);
+			PersonConsumer pc = new PersonConsumer("PC_" + name, road.getPedestrian(), person, in);
 //			PersonConsumerCensor censor = new PersonConsumerCensor(pc);
 			pc.start();
 //			censor.start();

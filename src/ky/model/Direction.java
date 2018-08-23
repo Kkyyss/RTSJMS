@@ -1,8 +1,8 @@
 package ky.model;
 
 public enum Direction {
-	TOP,
-	DOWN,
 	LEFT,
+	TOP,
 	RIGHT,
+	DOWN,
 }

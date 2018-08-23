@@ -70,7 +70,7 @@ public class PersonConsumer extends RealtimeThread {
 						} else {
 							pedestrian.getSecondHalfPerson().decrementAndGet();
 						}
-						MyUtils.log(tf.getIndex(), person.getName() + " leave...");
+						MyUtils.log(tf.getIndex(), person.getName() + " [LEAVE]");
 						return;
 					}
 					
@@ -85,7 +85,7 @@ public class PersonConsumer extends RealtimeThread {
 					}
 					person.increaseForward(1);
 					MyUtils.log(tf.getIndex(), 
-							person.getName() + " moving forwarding " + 
+							person.getName() + " -> " + 
 							person.getForwarding() + "/" + person.getRoad().getPedestrian().getLength());
 				} else {
 					if (in) {
@@ -94,7 +94,7 @@ public class PersonConsumer extends RealtimeThread {
 						person.getRoad().getPedestrian().getSecondHalfFallDown().incrementAndGet();
 					}
 					
-					MyUtils.log(tf.getIndex(), person.getName() + " falling down...");
+					MyUtils.log(tf.getIndex(), person.getName() + " [STOP]");
 					start = new RelativeTime();
 					period = new RelativeTime(5000, 0);
 					rp = new PeriodicParameters(start, period);

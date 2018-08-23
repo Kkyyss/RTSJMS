@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Components {
+	private boolean accidentHappended;
 	private String name;
 	private List<Traffic> tfs = new ArrayList<>();
 	private Weather weather;
 	private boolean accidentOccurs;
 	
+	public boolean isAccidentHappended() {
+		return accidentHappended;
+	}
+	public void setAccidentHappended(boolean accidentHappended) {
+		this.accidentHappended = accidentHappended;
+	}
 	public boolean isAccidentOccured() {
 		return accidentOccurs;
 	}
