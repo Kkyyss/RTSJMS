@@ -4,11 +4,10 @@ import javax.realtime.PeriodicParameters;
 import javax.realtime.RelativeTime;
 import javax.realtime.ReleaseParameters;
 
-import ky.rtt.consumer.traffic.AccidentContainer;
+import ky.rtt.consumer.traffic.AccidentOrIncidentContainer;
 import ky.rtt.consumer.traffic.TrafficContainer;
 import ky.rtt.consumer.weather.WeatherConsumer;
-import ky.rtt.producer.car.CarProducer;
-import ky.rtt.producer.car.CarProducerCensor;
+import ky.rtt.producer.car.CarProducerContainer;
 import ky.rtt.producer.person.PersonProducer;
 import ky.rtt.producer.person.PersonProducerCensor;
 
@@ -39,13 +38,17 @@ public class Container {
 		// TF1 <---> TF2
 		tf2.getLeftRoad().setPedestrian(pedestrian);
 		tf2.getLeftRoad().setSchool(school);
-		tf1.getRightRoad().setLinkedTraffic(tf2);
-		tf2.getLeftRoad().setLinkedTraffic(tf1);
+		tf1.getRightRoad().setLinkedTrafficIdx(tf2.getIndex());
+		tf2.getLeftRoad().setLinkedTrafficIdx(tf1.getIndex());
 		
 		// TF2 scenario
+		// TF2 Right prone to flood
+		// TF3 Left prone to flood
+		tf2.getRightRoad().setFloodArea(true);
+		tf3.getLeftRoad().setFloodArea(true);
 		// TF2 <---> TF3
-		tf2.getRightRoad().setLinkedTraffic(tf3);
-		tf3.getLeftRoad().setLinkedTraffic(tf2);
+		tf2.getRightRoad().setLinkedTrafficIdx(tf3.getIndex());
+		tf3.getLeftRoad().setLinkedTrafficIdx(tf2.getIndex());
 		
 		// TF3 scenario
 		// Large Condo - TOP
@@ -53,15 +56,15 @@ public class Container {
 		tf3.getTopRoad().setCondominium(condo);
 		
 		// TF3 <---> TF4
-		tf3.getRightRoad().setLinkedTraffic(tf4);
-		tf4.getLeftRoad().setLinkedTraffic(tf3);
+		tf3.getRightRoad().setLinkedTrafficIdx(tf4.getIndex());
+		tf4.getLeftRoad().setLinkedTrafficIdx(tf3.getIndex());
 		
 		// TF4 scenario
 		WeatherContainer(com);
 		CarProducerContainer(com);
 		PersonProducerContainer(com);
 		TrafficContainer(com);
-		AccidentContainer ac = new AccidentContainer(com);
+		AccidentOrIncidentContainer ac = new AccidentOrIncidentContainer(com);
 	}
 	
 	private void buildBluePrint(Components com, int size) {
@@ -92,12 +95,12 @@ public class Container {
 					RelativeTime period = new RelativeTime(7000, 0);
 					ReleaseParameters rp = new PeriodicParameters(start, period);
 					// IN
-					pp1 = new PersonProducer(road.getPedestrian().getName() + "_[1st]", rp, com, road, tf, true);
+					pp1 = new PersonProducer(road.getPedestrian().getName() + "_[U]", rp, com, road, tf, true);
 					start = new RelativeTime(5000, 0);
 					period = new RelativeTime(9000, 0);
 					rp = new PeriodicParameters(start, period);
 					// OUT
-					pp2 = new PersonProducer(road.getPedestrian().getName() + "_[2nd]", rp, com, road, tf, false);
+					pp2 = new PersonProducer(road.getPedestrian().getName() + "_[D]", rp, com, road, tf, false);
 					pps1 = new PersonProducerCensor(pp1);
 					pps2 = new PersonProducerCensor(pp2);
 					pp1.start();
@@ -135,16 +138,11 @@ public class Container {
 			int time = 3000;
 			for (Direction d: Direction.values()) {
 				Road road = tf.getRoad(d);
-				if (road.getLinkedTraffic() == null) {
+				if (road.getLinkedTrafficIdx() == -1) {
 					if (road.isHighway())
 						time = 2000;
-					RelativeTime period = new RelativeTime(time, 0);
-					ReleaseParameters rp = new PeriodicParameters(period);
-					CarProducer cp = new CarProducer(road.getName() + "_[CPR]", rp, com, tf, road);
-					
-					CarProducerCensor cpc = new CarProducerCensor(rp, cp);
-					cp.start();
-					cpc.start();
+
+					CarProducerContainer cpc = new CarProducerContainer(time, com, tf, road);
 					time += 1000;
 				}
 			}

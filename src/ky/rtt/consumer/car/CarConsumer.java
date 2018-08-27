@@ -35,7 +35,7 @@ public class CarConsumer extends RealtimeThread {
 		while (!car.isLeave()) {
 			road = car.getRoad();
 			Traffic tf = car.getTf();
-			Traffic linkedTf = road.getLinkedTraffic();
+			Traffic linkedTf = (road.getLinkedTrafficIdx() != -1) ? bj.getTfs().get(road.getLinkedTrafficIdx() - 1) : null;
 			
 			// Car going out and not linked with others traffic
 			if (car.getForwarding() == road.getLength()) {
@@ -133,7 +133,7 @@ public class CarConsumer extends RealtimeThread {
 	private boolean changeDirection(Car car, Traffic tf, Road road) {
 		Direction direction = MyUtils.getRandomDirections(road.getDirection());
 		Road nextRoad = tf.getRoad(direction);
-		Traffic linkedTf = nextRoad.getLinkedTraffic();
+		Traffic linkedTf = (nextRoad.getLinkedTrafficIdx() != -1) ? bj.getTfs().get(nextRoad.getLinkedTrafficIdx() -1) : null;
 		
 		if (linkedTf != null) {
 			// Linked traffic

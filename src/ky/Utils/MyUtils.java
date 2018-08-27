@@ -106,17 +106,17 @@ public class MyUtils {
 	public static void titleLog(String title) {
 		// Center the title
 		
-		log(String.format("%200s", "").replaceAll(" ", "=") + "\n"
-				+ String.format("%75s%-50s", "", title) + "\n"
-				+ String.format("%200s", "").replaceAll(" ", "="));
+		log(String.format("%120s", "").replaceAll(" ", "=") + "\n"
+				+ String.format("%45s%-25s", "", title) + "\n"
+				+ String.format("%120s", "").replaceAll(" ", "="));
 	}
 	public static void log(String any) {
 		System.out.println(any);
 	}
 	public static void log(int trafficNo, String any) {
-		int spacing = trafficNo * 50;
+		int spacing = trafficNo * 30;
 		// Right Pad + Left Pad
-		String str = "%" + ((spacing - 50 == 0) ? "" : spacing - 50) + "s%-" + 25 + "s";
+		String str = "%" + ((spacing - 30 == 0) ? "" : spacing - 30) + "s%-" + 25 + "s";
 		str = String.format(str, "", any);
 		
 		System.out.println(str);

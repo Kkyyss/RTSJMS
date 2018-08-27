@@ -26,7 +26,7 @@ public class TrafficContainer {
 	private ReleaseParameters rel;
 	private GreenConsumer rc;
 	private Traffic tf;
-	
+	private Direction previousGreenSignalRoad = null;
 
 	public TrafficContainer(String name, ReleaseParameters rel, Components com, Traffic tf) {
 		aie = new AsynchronouslyInterruptedException();
@@ -45,7 +45,7 @@ public class TrafficContainer {
 		startEvt = new AsyncEvent();
 		startEvt.addHandler(start);
 		
-		RoadConsumerSensor rcs = new RoadConsumerSensor();
+		TrafficConsumerSensor rcs = new TrafficConsumerSensor();
 	}
 	private void renewConsumer() {
 		rc = new GreenConsumer(rel);
@@ -73,9 +73,15 @@ public class TrafficContainer {
 		public void run(AsynchronouslyInterruptedException aie) throws AsynchronouslyInterruptedException {
 			while (true) {
 				if (initial) {
+					if (previousGreenSignalRoad != null) {
+						tf.getRoad(previousGreenSignalRoad).setLight(Light.GREEN);
+						MyUtils.log(tf.getIndex(), tf.getRoad(previousGreenSignalRoad).getName() + " -> GREEN [CONT]");
+						previousGreenSignalRoad = null;
+					} else {
 						tf.getLeftRoad().setLight(Light.GREEN);
-						MyUtils.log(tf.getIndex(), tf.getLeftRoad().getName() + " -> GREEN");						
-						initial = false;
+						MyUtils.log(tf.getIndex(), tf.getLeftRoad().getName() + " -> GREEN [INIT]");
+					}
+					initial = false;
 				} else {
 						for (int j = 0; j < Direction.values().length; j++) { 
 							Direction direction = Direction.values()[j];
@@ -135,9 +141,10 @@ public class TrafficContainer {
 		}
 	}
 	
-	public class RoadConsumerSensor extends RealtimeThread {
-		private boolean triggered;
-		public RoadConsumerSensor() {
+	public class TrafficConsumerSensor extends RealtimeThread {
+		private boolean accidentTrigger;
+		private boolean floodTrigger;
+		public TrafficConsumerSensor() {
 			super();
 			RelativeTime period = new RelativeTime(90, 0);
 			ReleaseParameters rp = new PeriodicParameters(period);
@@ -147,35 +154,65 @@ public class TrafficContainer {
 		
 		public void run() {
 			while (true) {
-				if (com.isAccidentOccured() && !triggered) {
-						if (tf.isTrafficAccident()) {
-							adjustTrafficLight();
-							triggered = true;
-							stopEvt.fire();
-						}
+				accidentLogic(com.isAccidentHappened());	
+				if (com.isAccidentCleared()) {
+					floodLogic(com.isFloodHappened());	
 				}
 				
-				if (triggered && !com.isAccidentOccured()) {
-					initialTrafficLight();
-					triggered = false;
-					startEvt.fire();
-				}
 				waitForNextPeriod();
 			}
+		}
+		
+		private void accidentLogic(boolean occurs) {
+			if (occurs && !accidentTrigger && !com.isAccidentCleared()) {
+				if (tf.isAccidentOrIncidentOccurs()) {
+					adjustTrafficLight();
+					accidentTrigger = true;
+					stopEvt.fire();
+				}
+			}
+			
+			if (accidentTrigger && com.isAccidentCleared()) {
+				tf.setAccidentOrIncidentOccurs(false);
+				initialTrafficLight();
+				accidentTrigger = false;
+				startEvt.fire();	
+			}			
+		}
+		
+		private void floodLogic(boolean occurs) {
+			if (occurs && !floodTrigger) {
+				if (tf.isAccidentOrIncidentOccurs()) {
+					adjustTrafficLight();
+					floodTrigger = true;
+					stopEvt.fire();						
+				}
+			}
+			
+			if (floodTrigger && com.isFloodCleared()) {
+				tf.setAccidentOrIncidentOccurs(false);
+				initialTrafficLight();
+				floodTrigger = false;
+				startEvt.fire();	
+			}				
 		}
 		
 		private void adjustTrafficLight() {
 				for (int j = 0; j < Direction.values().length; j++) { 
 					Direction direction = Direction.values()[j];
 					Road r = tf.getRoad(direction);
-					if (r.isAccidentArea()) {
+					Traffic linkedTf = (r.getLinkedTrafficIdx() != -1) ? com.getTfs().get(r.getLinkedTrafficIdx() - 1) : null;
+					if (r.isAccidentOccurs() || r.isFloodOccurs()) {
 						if (r.getLight() == Light.GREEN) {
+							previousGreenSignalRoad = r.getDirection();
 							MyUtils.log(tf.getIndex(), r.getName() + " -> GREEN [EXT]");
+						} else {
+							r.setLight(Light.GREEN);
+							MyUtils.log(tf.getIndex(), r.getName() + " -> GREEN [CHG]");
 						}
-						r.setLight(Light.GREEN);
-						MyUtils.log(tf.getIndex(), r.getName() + " -> GREEN [CHG]");
 					} else {
 						if (r.getLight() == Light.GREEN) {
+							previousGreenSignalRoad = r.getDirection();
 							r.setLight(Light.RED);
 							MyUtils.log(tf.getIndex(), r.getName() + " -> RED [CHG]");									
 						}

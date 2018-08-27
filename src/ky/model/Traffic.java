@@ -5,16 +5,15 @@ import javax.realtime.AsyncEvent;
 public class Traffic {
 	private String name;
 	private int index;
-	private int centerArea = 400;
 	private Road leftRoad, topRoad, downRoad, rightRoad;
 	private AsyncEvent trigger;
-	private boolean trafficAccident;
-	
-	public boolean isTrafficAccident() {
-		return trafficAccident;
+	private boolean accidentOrIncidentOccurs;
+
+	public boolean isAccidentOrIncidentOccurs() {
+		return accidentOrIncidentOccurs;
 	}
-	public void setTrafficAccident(boolean trafficAccident) {
-		this.trafficAccident = trafficAccident;
+	public void setAccidentOrIncidentOccurs(boolean accidentOrIncidentOccurs) {
+		this.accidentOrIncidentOccurs = accidentOrIncidentOccurs;
 	}
 	public AsyncEvent getTrigger() {
 		return trigger;
@@ -42,12 +41,6 @@ public class Traffic {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public int getCenterArea() {
-		return centerArea;
-	}
-	public void setCenterArea(int centerArea) {
-		this.centerArea = centerArea;
 	}
 	public Road getLeftRoad() {
 		return leftRoad;

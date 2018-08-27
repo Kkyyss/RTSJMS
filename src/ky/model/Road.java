@@ -1,15 +1,12 @@
 package ky.model;
 
-import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ky.rtt.consumer.road.RoadConsumer;
-
 public class Road {
-	private boolean isAccidentArea;
+	private boolean isAccidentOccurs;
+	private boolean isFloodOccurs;
 	private String name;
-	private Traffic linkedTraffic;
+	private int linkedTrafficIdx = -1;
 	private Direction direction;
 	private Light light = Light.RED;
 	private Condominium condominium;
@@ -17,29 +14,23 @@ public class Road {
 	private int length = 3;
 	private boolean highway = false;
 	private Pedestrian pedestrian;
-	private AtomicBoolean floodArea = new AtomicBoolean(false);
+	private boolean floodArea;
 	private Car latestCar;
 	private AtomicInteger totalInCars = new AtomicInteger(0);
 	private AtomicInteger totalOutCars = new AtomicInteger(0);
-	private RoadConsumer rc;
 
-	public RoadConsumer getRc() {
-		return rc;
+	public boolean isFloodOccurs() {
+		return isFloodOccurs;
 	}
-	public void setRc(RoadConsumer rc) {
-		this.rc = rc;
+
+	public void setFloodOccurs(boolean isFloodOccurs) {
+		this.isFloodOccurs = isFloodOccurs;
 	}
-	public boolean isAccidentArea() {
-		return isAccidentArea;
+	public boolean isAccidentOccurs() {
+		return isAccidentOccurs;
 	}
-	public void setAccidentArea(boolean isAccidentArea) {
-		this.isAccidentArea = isAccidentArea;
-	}
-	public boolean isHighway() {
-		return highway;
-	}
-	public void setHighway(boolean highway) {
-		this.highway = highway;
+	public void setAccidentOccurs(boolean isAccidentOccurs) {
+		this.isAccidentOccurs = isAccidentOccurs;
 	}
 	public School getSchool() {
 		return school;
@@ -59,10 +50,16 @@ public class Road {
 	public void setTotalOutCars(AtomicInteger totalOutCars) {
 		this.totalOutCars = totalOutCars;
 	}
-	public AtomicBoolean getFloodArea() {
+	public boolean isFloodArea() {
 		return floodArea;
 	}
-	public void setFloodArea(AtomicBoolean floodArea) {
+	public boolean isHighway() {
+		return highway;
+	}
+	public void setHighway(boolean highway) {
+		this.highway = highway;
+	}
+	public void setFloodArea(boolean floodArea) {
 		this.floodArea = floodArea;
 	}
 	public Car getLatestCar() {
@@ -71,11 +68,11 @@ public class Road {
 	public void setLatestCar(Car latestCar) {
 		this.latestCar = latestCar;
 	}
-	public Traffic getLinkedTraffic() {
-		return linkedTraffic;
+	public int getLinkedTrafficIdx() {
+		return linkedTrafficIdx;
 	}
-	public void setLinkedTraffic(Traffic linkedTraffic) {
-		this.linkedTraffic = linkedTraffic;
+	public void setLinkedTrafficIdx(int linkedTrafficIdx) {
+		this.linkedTrafficIdx = linkedTrafficIdx;
 	}
 	public String getName() {
 		return name;

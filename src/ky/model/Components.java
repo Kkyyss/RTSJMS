@@ -4,23 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Components {
-	private boolean accidentHappended;
+	private boolean accidentHappened;
+	private boolean accidentCleared;
+	private boolean floodHappened;
+	private boolean floodCleared;
 	private String name;
 	private List<Traffic> tfs = new ArrayList<>();
 	private Weather weather;
-	private boolean accidentOccurs;
-	
-	public boolean isAccidentHappended() {
-		return accidentHappended;
+
+	public boolean isFloodCleared() {
+		return floodCleared;
 	}
-	public void setAccidentHappended(boolean accidentHappended) {
-		this.accidentHappended = accidentHappended;
+	public void setFloodCleared(boolean floodCleared) {
+		this.floodCleared = floodCleared;
 	}
-	public boolean isAccidentOccured() {
-		return accidentOccurs;
+	public boolean isAccidentCleared() {
+		return accidentCleared;
 	}
-	public void setAccidentOccurs(boolean accidentOccurs) {
-		this.accidentOccurs = accidentOccurs;
+	public void setAccidentCleared(boolean accidentCleared) {
+		this.accidentCleared = accidentCleared;
+	}
+	public boolean isAccidentHappened() {
+		return accidentHappened;
+	}
+	public void setAccidentHappened(boolean accidentHappened) {
+		this.accidentHappened = accidentHappened;
+	}
+	public boolean isFloodHappened() {
+		return floodHappened;
+	}
+	public void setFloodHappened(boolean floodHappened) {
+		this.floodHappened = floodHappened;
 	}
 	public Weather getWeather() {
 		return weather;
