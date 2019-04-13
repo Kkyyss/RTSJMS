@@ -6,7 +6,6 @@ public class Traffic {
 	private String name;
 	private int index;
 	private Road leftRoad, topRoad, downRoad, rightRoad;
-	private AsyncEvent trigger;
 	private boolean accidentOrIncidentOccurs;
 
 	public boolean isAccidentOrIncidentOccurs() {
@@ -14,12 +13,6 @@ public class Traffic {
 	}
 	public void setAccidentOrIncidentOccurs(boolean accidentOrIncidentOccurs) {
 		this.accidentOrIncidentOccurs = accidentOrIncidentOccurs;
-	}
-	public AsyncEvent getTrigger() {
-		return trigger;
-	}
-	public void setTrigger(AsyncEvent trigger) {
-		this.trigger = trigger;
 	}
 	public int getIndex() {
 		return index;
